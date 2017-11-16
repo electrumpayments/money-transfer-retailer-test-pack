@@ -1,0 +1,1 @@
+java $JAVA_OPTS -jar target/money-transfer-retailer-test-pack-0.0.1-RC1-jar-with-dependencies.jar $PORT
