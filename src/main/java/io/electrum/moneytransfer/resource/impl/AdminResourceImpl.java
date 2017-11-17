@@ -59,7 +59,7 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
                   receiverId));
       Response rsp =
             AdminMessageHandlerFactory.getGetCustomerInfoHandler()
-                  .handle(idNumber, merchantId, originatorInstId, receiverId, httpHeaders);
+                  .handle(idNumber, merchantId, originatorInstId, receiverId, httpHeaders, uriInfo);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -76,7 +76,7 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = AdminMessageHandlerFactory.getCreateOrUpdateCustomerHandler().handle(body, httpHeaders);
+      Response rsp = AdminMessageHandlerFactory.getCreateOrUpdateCustomerHandler().handle(body, httpHeaders, uriInfo);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
