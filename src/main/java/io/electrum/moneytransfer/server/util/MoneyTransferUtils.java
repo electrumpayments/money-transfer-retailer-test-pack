@@ -8,11 +8,11 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.internal.util.Base64;
 
 public class MoneyTransferUtils {
-   public static Response isUuidConsistent(String uuid, String id, String requestType) {
-      return isUuidConsistent(uuid, id, null, requestType);
+   public static Response isUuidConsistent(String uuid, String id) {
+      return isUuidConsistent(uuid, id, null);
    }
 
-   public static Response isUuidConsistent(String uuid, String id, String originalId, String requestType) {
+   public static Response isUuidConsistent(String uuid, String id, String originalId) {
       Response rsp = null;
       String pathId = uuid.toString();
       String objectId = id;

@@ -9,8 +9,11 @@ import io.electrum.moneytransfer.server.MoneyTransferTestServerRunner;
 import io.electrum.moneytransfer.server.model.DetailMessage;
 import io.electrum.moneytransfer.server.model.FormatError;
 import io.electrum.vas.model.BasicReversal;
+import io.electrum.vas.model.Institution;
 import io.electrum.vas.model.Merchant;
 import io.electrum.vas.model.Originator;
+import io.electrum.vas.model.SlipData;
+import io.electrum.vas.model.ThirdPartyIdentifier;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +27,54 @@ import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 
 public class OrderUtils {
+   private static ConcurrentHashMap<String, String> orderRedeemRef = new ConcurrentHashMap<>();
+
+   public static Boolean doesOrderExist(String redeemRef, String redeemOrderId) {
+      String orderId = orderRedeemRef.get(redeemRef);
+      if (redeemOrderId.equals(orderId)) {
+         return Boolean.TRUE;
+      } else {
+         return Boolean.FALSE;
+      }
+   }
+
+   public static MoneyTransferAuthResponse authRspFromReq(MoneyTransferAuthRequest req) {
+      MoneyTransferAuthResponse rsp = new MoneyTransferAuthResponse();
+      rsp.setAmount(req.getAmount());
+      rsp.setOrderId(req.getId());
+      String redeemRef = RandomData.random09(15);
+      orderRedeemRef.put(redeemRef, req.getId());
+      rsp.setOrderRedeemRef(redeemRef);
+      rsp.setSenderDetails(req.getSenderDetails());
+      rsp.setOriginator(req.getOriginator());
+      rsp.setTime(req.getTime());
+      Institution receiver = req.getReceiver();
+      List<ThirdPartyIdentifier> thirdPartyIds = req.getThirdPartyIdentifiers();
+      if (thirdPartyIds == null) {
+         new ArrayList<ThirdPartyIdentifier>();
+      }
+      rsp.setReceiver(req.getReceiver());
+      rsp.setId(req.getId());
+
+      SlipData slipData = new SlipData();
+      rsp.setSlipData(slipData);
+      Institution settlementEntity = req.getSettlementEntity();
+      if (settlementEntity == null) {
+         settlementEntity = new Institution();
+         settlementEntity.setId("33333333");
+         settlementEntity.setName("TransactionsRUs");
+      }
+      thirdPartyIds.add(
+            new ThirdPartyIdentifier().institutionId(settlementEntity.getId())
+                  .transactionIdentifier(RandomData.random09AZ((int) ((Math.random() * 20) + 1))));
+      thirdPartyIds.add(
+            new ThirdPartyIdentifier().institutionId(receiver.getId())
+                  .transactionIdentifier(RandomData.random09AZ((int) ((Math.random() * 20) + 1))));
+      rsp.setSettlementEntity(settlementEntity);
+      rsp.setThirdPartyIdentifiers(thirdPartyIds);
+      return rsp;
+   }
+
    public static Response canCreateOrder(String id, String username, String password) {
       ErrorDetail errorDetail = new ErrorDetail().id(id);
       ConcurrentHashMap<RequestKey, MoneyTransferAuthRequest> authRequestRecords =
