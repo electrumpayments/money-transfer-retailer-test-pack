@@ -2,7 +2,7 @@
 FROM java:8
 
 # that's me!
-MAINTAINER Tim Whelan, timwhelan@electrum.co.za
+MAINTAINER Richard Fourie, richardfourie@electrum.co.za
 
 # we need this because the workdir is modified in dockerfile/java -> now java:8
 WORKDIR /
