@@ -26,7 +26,11 @@ public class MoneyTransferTestServerRunner {
    private static MoneyTransferTestServer testServer;
 
    public static void main(String[] args) throws Exception {
-      startMoneyTransferTestServer(args[0]);
+      if (args.length == 0) {
+         startMoneyTransferTestServer("8443");
+      } else {
+         startMoneyTransferTestServer(args[0]);
+      }
    }
 
    public static void startMoneyTransferTestServer(String port) throws Exception {
