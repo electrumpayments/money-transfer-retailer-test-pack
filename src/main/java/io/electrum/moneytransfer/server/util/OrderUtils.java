@@ -50,6 +50,11 @@ public class OrderUtils {
       rsp.setOriginator(req.getOriginator());
       rsp.setTime(req.getTime());
       Institution receiver = req.getReceiver();
+      if (receiver == null) {
+         receiver = new Institution();
+         receiver.setId("44444444");
+         receiver.setName("TransactionsReceivers");
+      }
       List<ThirdPartyIdentifier> thirdPartyIds = req.getThirdPartyIdentifiers();
       if (thirdPartyIds == null) {
          thirdPartyIds = new ArrayList<ThirdPartyIdentifier>();
@@ -152,13 +157,10 @@ public class OrderUtils {
          return null;
       }
       List<FormatError> formatErrors = new ArrayList<FormatError>(violations.size());
-      int i = 0;
       for (ConstraintViolation<?> violation : violations) {
-         System.out.println(i);
          formatErrors.add(
                new FormatError().msg(violation.getMessage()).field(violation.getPropertyPath().toString()).value(
                      violation.getInvalidValue() == null ? "null" : violation.getInvalidValue().toString()));
-         i++;
       }
       return new ErrorDetail().errorType(ErrorTypeEnum.FORMAT_ERROR).errorMessage("Bad formatting").detailMessage(
             new DetailMessage().formatErrors(formatErrors));
