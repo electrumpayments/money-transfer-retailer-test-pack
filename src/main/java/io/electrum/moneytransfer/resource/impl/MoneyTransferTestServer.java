@@ -46,6 +46,8 @@ public class MoneyTransferTestServer extends ResourceConfig {
    private static ConcurrentHashMap<RequestKey, MoneyTransferRedeemResponse> redeemResponseRecords =
          new ConcurrentHashMap<>();
    private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> reversalRecords = new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> reversalResponseRecords =
+         new ConcurrentHashMap<>();
    private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
 
    public MoneyTransferTestServer() {
@@ -86,6 +88,10 @@ public class MoneyTransferTestServer extends ResourceConfig {
 
    public static ConcurrentHashMap<RequestKey, MoneyTransferReversal> getReversalRecords() {
       return reversalRecords;
+   }
+
+   public static ConcurrentHashMap<RequestKey, MoneyTransferReversal> getReversalResponseRecords() {
+      return reversalResponseRecords;
    }
 
    @Provider

@@ -85,22 +85,23 @@ public class OrderUtils {
       ErrorDetail errorDetail = new ErrorDetail().id(id);
       RequestKey requestKey = new RequestKey(username, password, RequestKey.CREATE_ORDER_RESOURCE, id);
       MoneyTransferAuthRequest originalRequest = MoneyTransferTestServer.getAuthRequestRecords().get(requestKey);
-      if (originalRequest != null) {
-         errorDetail.errorType(ErrorTypeEnum.DUPLICATE_RECORD).errorMessage("Duplicate UUID.");
-         MoneyTransferAuthResponse rsp = MoneyTransferTestServer.getAuthResponseRecords().get(requestKey);
-         errorDetail.setDetailMessage("Create Order request already processed.\n Response:\n" + String.valueOf(rsp));
-         return Response.status(400).entity(errorDetail).build();
+      if (originalRequest == null) {
+         RequestKey reversalKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, id);
+         BasicReversal reversal = MoneyTransferTestServer.getReversalRecords().get(reversalKey);
+         if (reversal == null) {
+            return null;
+         } else {
+            errorDetail.errorType(ErrorTypeEnum.ALREADY_REDEEMED).errorMessage("Payment reversed.").setDetailMessage(
+                  "Payment Reversal already processed.\n Response:\n"
+                        + String.valueOf(MoneyTransferTestServer.getReversalResponseRecords().get(reversalKey)));
+         }
+      } else {
+         errorDetail.errorType(ErrorTypeEnum.DUPLICATE_RECORD).errorMessage("Duplicate UUID.").setDetailMessage(
+               "Create Order request already processed.\n Response:\n"
+                     + String.valueOf(MoneyTransferTestServer.getAuthResponseRecords().get(requestKey)));
       }
 
-      RequestKey reversalKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, id);
-      BasicReversal reversal = MoneyTransferTestServer.getReversalRecords().get(reversalKey);
-      if (reversal != null) {
-         MoneyTransferAuthResponse rsp = MoneyTransferTestServer.getAuthResponseRecords().get(requestKey);
-         errorDetail.errorType(ErrorTypeEnum.ALREADY_REDEEMED).errorMessage("Payment reversed.").setDetailMessage(
-               "Payment Reversal already processed.\n Response:\n" + String.valueOf(rsp));
-         return Response.status(400).entity(errorDetail).build();
-      }
-      return null;
+      return Response.status(400).entity(errorDetail).build();
    }
 
    public static Response validateCreateOrderRequest(MoneyTransferAuthRequest authRequest) {
