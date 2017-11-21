@@ -23,22 +23,17 @@ public class MoneyTransferTestServerRunner {
 
    private static Logger log_logger = LoggerFactory.getLogger("io.electrum.moneytransfer.server.log");
 
-   private static MoneyTransferTestServer testServer;
-
    public static void main(String[] args) throws Exception {
+      String port;
       if (args.length == 0) {
-         startMoneyTransferTestServer("8443");
+         port = "8443";
       } else {
-         startMoneyTransferTestServer(args[0]);
+         port = args[0];
       }
-   }
-
-   public static void startMoneyTransferTestServer(String port) throws Exception {
 
       log_logger.info("---- STARTING MONEY TRANSFER SERVER ----");
 
       try {
-
          // === jetty.xml ===
          // Setup Threadpool
          QueuedThreadPool threadPool = new QueuedThreadPool();
@@ -53,7 +48,7 @@ public class MoneyTransferTestServerRunner {
          // HTTP Configuration
          HttpConfiguration http_config = new HttpConfiguration();
          http_config.setSecureScheme("https");
-         http_config.setSecurePort(new Integer(port));
+         http_config.setSecurePort(Integer.parseInt(port));
          http_config.setOutputBufferSize(32768);
          http_config.setRequestHeaderSize(8192);
          http_config.setResponseHeaderSize(8192);
@@ -73,14 +68,14 @@ public class MoneyTransferTestServerRunner {
 
          // === jetty-http.xml ===
          ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(http_config));
-         http.setPort(new Integer(port));
+         http.setPort(Integer.parseInt(port));
          http.setIdleTimeout(30000);
          server.addConnector(http);
 
          ConstraintSecurityHandler sh = new ConstraintSecurityHandler();
          // sh.addConstraintMapping(cm);
 
-         testServer = new MoneyTransferTestServer();
+         MoneyTransferTestServer testServer = new MoneyTransferTestServer();
          ServletContainer servletContainer = new ServletContainer(testServer);
          ServletHolder servletHolder = new ServletHolder(servletContainer);
          ServletContextHandler context = new ServletContextHandler();
@@ -95,11 +90,6 @@ public class MoneyTransferTestServerRunner {
          server.join();
       } catch (Exception e) {
          log_logger.error("Unable to start TestServer", e);
-         throw e;
       }
-   }
-
-   public static MoneyTransferTestServer getTestServer() {
-      return testServer;
    }
 }

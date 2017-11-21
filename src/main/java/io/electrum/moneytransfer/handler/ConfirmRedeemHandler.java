@@ -23,8 +23,7 @@ public class ConfirmRedeemHandler {
          return null;
       } catch (Exception e) {
          log.debug("error processing ConfirmRedeem", e);
-         Response rsp = Response.serverError().entity(e.getMessage()).build();
-         return rsp;
+         return Response.serverError().entity(e.getMessage()).build();
       }
    }
 }

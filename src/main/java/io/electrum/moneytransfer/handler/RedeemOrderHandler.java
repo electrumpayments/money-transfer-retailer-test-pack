@@ -23,8 +23,7 @@ public class RedeemOrderHandler {
          return null;
       } catch (Exception e) {
          log.debug("error processing RedeemOrder", e);
-         Response rsp = Response.serverError().entity(e.getMessage()).build();
-         return rsp;
+         return Response.serverError().entity(e.getMessage()).build();
       }
    }
 }

@@ -81,10 +81,10 @@ public class FormatError {
       StringBuilder sb = new StringBuilder();
       sb.append("class DetailMessage {\n");
 
-      sb.append("    field: ").append(Utils.toIndentedString(field)).append("\n");
-      sb.append("    msg: ").append(Utils.toIndentedString(msg)).append("\n");
-      sb.append("    value: ").append(Utils.toIndentedString(value)).append("\n");
-      sb.append("}");
+      sb.append("    field: ").append(Utils.toIndentedString(field)).append('\n');
+      sb.append("    msg: ").append(Utils.toIndentedString(msg)).append('\n');
+      sb.append("    value: ").append(Utils.toIndentedString(value)).append('\n');
+      sb.append('}');
       return sb.toString();
    }
 }

@@ -13,8 +13,7 @@ public class MoneyTransferUtils {
    }
 
    public static Response isUuidConsistent(String uuid, String id, String originalId) {
-      Response rsp = null;
-      String pathId = uuid.toString();
+      String pathId = uuid;
       String objectId = id;
       ErrorDetail errorDetail = null;
       if (!pathId.equals(objectId)) {
@@ -33,9 +32,8 @@ public class MoneyTransferUtils {
          errorDetail.id(id).originalId(originalId);
          DetailMessage detailMessage = (DetailMessage) errorDetail.getDetailMessage();
          detailMessage.setReversalId(objectId);
-         rsp = Response.status(400).entity(errorDetail).build();
+         return Response.status(400).entity(errorDetail).build();
       }
-      return rsp;
    }
 
    public static String getAuthString(String authHeader) {
@@ -43,8 +41,7 @@ public class MoneyTransferUtils {
          return null;
       }
       String credsSubstring = authHeader.substring("Basic ".length());
-      String usernameAndPassword = Base64.decodeAsString(credsSubstring);
-      return usernameAndPassword;
+      return Base64.decodeAsString(credsSubstring);
    }
 
    public static String getUsernameFromAuth(String authString) {

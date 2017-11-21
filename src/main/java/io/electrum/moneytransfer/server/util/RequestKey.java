@@ -1,7 +1,5 @@
 package io.electrum.moneytransfer.server.util;
 
-import java.util.Objects;
-
 public class RequestKey {
    public static final String GET_CUSTOMER_INFO_RESOURCE = "getCustomerInfo";
    public static final String CREATE_OR_UPDATE_CUSTOMER_RESOURCE = "createOrUpdateCustomer";
@@ -58,35 +56,67 @@ public class RequestKey {
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) {
+   public boolean equals(Object obj) {
+      if (this == obj) {
          return true;
       }
-      if (o == null || getClass() != o.getClass()) {
+      if (obj == null) {
          return false;
       }
-
-      RequestKey otherKey = (RequestKey) o;
-
-      return username != null && username.equals(otherKey.username) && password != null
-            && password.equals(otherKey.password) && resourceType != null && resourceType.equals(otherKey.resourceType)
-            && uuid != null && uuid.equals(otherKey.uuid);
+      if (!(obj instanceof RequestKey)) {
+         return false;
+      }
+      RequestKey other = (RequestKey) obj;
+      if (password == null) {
+         if (other.password != null) {
+            return false;
+         }
+      } else if (!password.equals(other.password)) {
+         return false;
+      }
+      if (resourceType == null) {
+         if (other.resourceType != null) {
+            return false;
+         }
+      } else if (!resourceType.equals(other.resourceType)) {
+         return false;
+      }
+      if (username == null) {
+         if (other.username != null) {
+            return false;
+         }
+      } else if (!username.equals(other.username)) {
+         return false;
+      }
+      if (uuid == null) {
+         if (other.uuid != null) {
+            return false;
+         }
+      } else if (!uuid.equals(other.uuid)) {
+         return false;
+      }
+      return true;
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(username, password, resourceType, uuid);
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((password == null) ? 0 : password.hashCode());
+      result = prime * result + ((resourceType == null) ? 0 : resourceType.hashCode());
+      result = prime * result + ((username == null) ? 0 : username.hashCode());
+      return prime * result + ((uuid == null) ? 0 : uuid.hashCode());
    }
 
    @Override
    public String toString() {
       StringBuilder sb = new StringBuilder();
       sb.append(username);
-      sb.append("|");
+      sb.append('|');
       sb.append(password);
-      sb.append("|");
+      sb.append('|');
       sb.append(resourceType);
-      sb.append("|");
+      sb.append('|');
       sb.append(uuid);
       return sb.toString();
    }

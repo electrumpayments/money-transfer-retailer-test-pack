@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 @Path("/moneytransfer/v0/orders")
 @Api(description = "the Money Transfer Retailer Order API", authorizations = { @Authorization("httpBasic") })
 public class OrdersResourceImpl extends OrdersResource implements IOrdersResource {
-   static OrdersResourceImpl instance = null;
+   private static OrdersResourceImpl instance = null;
    private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
 
    @Override
@@ -102,7 +102,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(
             String.format(
-                  "%s %s\nOrder Redeem Reference: %s\nMerchant ID: %s\nOriginator Institute ID: %s\nReceiver ID: %",
+                  "%s %s\nOrder Redeem Reference: %s\nMerchant ID: %s\nOriginator Institute ID: %s\nReceiver ID: %s",
                   httpServletRequest.getMethod(),
                   uriInfo.getPath(),
                   orderRedeemRef,

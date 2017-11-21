@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 @Path("/moneytransfer/v0/admin")
 @Api(description = "the Money Transfer Retailer Admin API", authorizations = { @Authorization("httpBasic") })
 public class AdminResourceImpl extends AdminResource implements IAdminResource {
-   static AdminResourceImpl instance = null;
+   private static AdminResourceImpl instance = null;
    private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
 
    @Override

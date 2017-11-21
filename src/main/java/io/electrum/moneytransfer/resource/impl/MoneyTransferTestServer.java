@@ -32,14 +32,20 @@ import org.slf4j.LoggerFactory;
 
 public class MoneyTransferTestServer extends ResourceConfig {
 
-   private ConcurrentHashMap<RequestKey, MoneyTransferAdminMessage> adminRecords;
-   private ConcurrentHashMap<RequestKey, MoneyTransferAuthRequest> authRequestRecords;
-   private ConcurrentHashMap<RequestKey, MoneyTransferAuthResponse> authResponseRecords;
-   private ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> confirmationRecords;
-   private ConcurrentHashMap<RequestKey, MoneyTransferLookupResponse> lookupResponseRecords;
-   private ConcurrentHashMap<RequestKey, MoneyTransferRedeemRequest> redeemRequestRecords;
-   private ConcurrentHashMap<RequestKey, MoneyTransferRedeemResponse> redeemResponseRecords;
-   private ConcurrentHashMap<RequestKey, MoneyTransferReversal> reversalRecords;
+   private static ConcurrentHashMap<RequestKey, MoneyTransferAdminMessage> adminRecords = new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferAuthRequest> authRequestRecords =
+         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferAuthResponse> authResponseRecords =
+         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> confirmationRecords =
+         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferLookupResponse> lookupResponseRecords =
+         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferRedeemRequest> redeemRequestRecords =
+         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferRedeemResponse> redeemResponseRecords =
+         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> reversalRecords = new ConcurrentHashMap<>();
    private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
 
    public MoneyTransferTestServer() {
@@ -48,45 +54,37 @@ public class MoneyTransferTestServer extends ResourceConfig {
       register(MyObjectMapperProvider.class);
       register(JacksonFeature.class);
       log.debug("Initing new TestServer");
-      this.adminRecords = new ConcurrentHashMap<>();
-      this.authRequestRecords = new ConcurrentHashMap<>();
-      this.authResponseRecords = new ConcurrentHashMap<>();
-      this.confirmationRecords = new ConcurrentHashMap<>();
-      this.lookupResponseRecords = new ConcurrentHashMap<>();
-      this.redeemRequestRecords = new ConcurrentHashMap<>();
-      this.redeemResponseRecords = new ConcurrentHashMap<>();
-      this.reversalRecords = new ConcurrentHashMap<>();
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferAdminMessage> getAdminRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferAdminMessage> getAdminRecords() {
       return adminRecords;
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferAuthRequest> getAuthRequestRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferAuthRequest> getAuthRequestRecords() {
       return authRequestRecords;
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferAuthResponse> getAuthResponseRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferAuthResponse> getAuthResponseRecords() {
       return authResponseRecords;
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> getConfirmationRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> getConfirmationRecords() {
       return confirmationRecords;
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferLookupResponse> getLookupResponseRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferLookupResponse> getLookupResponseRecords() {
       return lookupResponseRecords;
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferRedeemRequest> getRedeemRequestRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferRedeemRequest> getRedeemRequestRecords() {
       return redeemRequestRecords;
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferRedeemResponse> getRedeemResponseRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferRedeemResponse> getRedeemResponseRecords() {
       return redeemResponseRecords;
    }
 
-   public ConcurrentHashMap<RequestKey, MoneyTransferReversal> getReversalRecords() {
+   public static ConcurrentHashMap<RequestKey, MoneyTransferReversal> getReversalRecords() {
       return reversalRecords;
    }
 
@@ -94,7 +92,6 @@ public class MoneyTransferTestServer extends ResourceConfig {
    public static class MyObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
       private final ObjectMapper mapper;
-      private final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
       public MyObjectMapperProvider() {
          mapper = new ObjectMapper();
@@ -104,6 +101,7 @@ public class MoneyTransferTestServer extends ResourceConfig {
          mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
          mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
          mapper.registerModule(new JodaModule());
+         DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
          DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
          mapper.setDateFormat(DATE_FORMAT);
       }
