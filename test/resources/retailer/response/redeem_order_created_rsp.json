@@ -1,0 +1,65 @@
+{
+  "id": "7d444840-9dc0-11d1-b245-5ffdce74faaa",
+  "time": "2018-04-13T07:28:49.579Z",
+  "originator": {
+    "institution": {
+      "id": "632942",
+      "name": "Massmart"
+    },
+    "terminalId": "string",
+    "merchant": {
+      "merchantType": "string",
+      "merchantId": "string",
+      "merchantName": {
+        "name": "string",
+        "city": "string",
+        "region": "string",
+        "country": "string"
+      }
+    }
+  },
+  "client": {
+    "id": "11112",
+    "name": "Insta A2"
+  },
+  "settlementEntity": {
+    "id": "string",
+    "name": "string"
+  },
+  "receiver": {
+    "id": "632946",
+    "name": "Capitec"
+  },
+  "thirdPartyIdentifiers": [
+    {
+      "institutionId": "1234",
+      "transactionIdentifier": "000000851802"
+    }
+  ],
+  "slipData": {
+    "messageLines": [
+      {
+        "barcode": {
+          "data": "string",
+          "encoding": "string"
+        },
+        "text": "string",
+        "fontWidthScaleFactor": 0,
+        "fontHeightScaleFactor": 0,
+        "line": false,
+        "cut": false
+      }
+    ],
+    "slipWidth": 0,
+    "issuerReference": "string"
+  },
+  "basketRef": "string12",
+  "tranType": "GOODS_AND_SERVICES",
+  "srcAccType": "DEFAULT",
+  "destAccType": "DEFAULT",
+  "amount": {
+    "amount": 20000,
+    "currency": "710"
+  },
+  "orderId": "7d444840-9dc0-11d1-b245-5ffdce74fae3"
+}

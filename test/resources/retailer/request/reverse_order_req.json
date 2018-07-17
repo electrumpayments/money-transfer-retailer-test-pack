@@ -1,0 +1,12 @@
+{
+  "id": "5c30231f-1f9a-45e2-97c1-5e24600090dd",
+  "requestId": "",
+  "time": "2018-04-10T09:29:17.252Z",
+  "thirdPartyIdentifiers": [
+    {
+      "institutionId": "11111",
+      "transactionIdentifier": "222222"
+    }
+  ],
+  "reversalReason": "CANCELLED"
+}

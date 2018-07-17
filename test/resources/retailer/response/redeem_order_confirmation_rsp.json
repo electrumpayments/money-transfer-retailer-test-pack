@@ -1,0 +1,11 @@
+{
+  "id": "7d444840-9dc0-11d1-b245-5ffdce74fad9",
+  "requestId": "string",
+  "time": "2018-04-10T10:35:40.550Z",
+  "thirdPartyIdentifiers": [
+    {
+      "institutionId": "632946",
+      "transactionIdentifier": "string"
+    }
+  ]
+}

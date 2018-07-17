@@ -1,0 +1,45 @@
+{
+  "originator": {
+    "institution": {
+      "id": "1234",
+      "name": "Retailer Inc"
+    },
+    "terminalId": "12345678",
+    "merchant": {
+      "merchantType": "0000",
+      "merchantId": "123456789012345",
+      "merchantName": {
+        "name": "TestMerchant",
+        "city": "Cape Town",
+        "region": "WC",
+        "country": "ZA"
+      }
+    }
+  },
+  "receiver": {
+    "id": "1234",
+    "name": "Insta A"
+  },
+  "customerDetails": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "idNumber": "12347890456",
+    "idType": "NATIONAL_ID",
+    "idCountryCode": "ZA",
+    "nationality": "ZA",
+    "dateOfBirth": "1993-06-22",
+    "contactNumber": "27717373708",
+    "altContactHome": "27717373707",
+    "altContactWork": "27717373705",
+    "email": "jane@doe.com",
+    "address": {
+      "addressLine1": "29 Sir Lowry Rd",
+      "addressLine2": "Zonnebloem",
+      "city": "Cape Town",
+      "province": "WC",
+      "country": "ZA",
+      "postCode": "7925"
+    }
+  },
+  "customerProfileId": "012345678"
+}
