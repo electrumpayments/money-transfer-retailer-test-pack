@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.electrum</groupId>
   <artifactId>money-transfer-retailer-test-pack</artifactId>
-  <version>0.0.1-RC1</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Money Transfer Retailer</name>
   <description>Server and Postman scripts to test Money Transfer Retailer Interface implementaitons</description>
