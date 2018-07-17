@@ -31,7 +31,8 @@
   </scm>
 
   <properties>
-    <money-transfer-retailer-version>1.0.0-RC1</money-transfer-retailer-version>
+    <money-transfer-retailer-version>2.0.0</money-transfer-retailer-version>
+    <service-interface-base-version>3.9.0</service-interface-base-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <joda-time-version>2.9.9</joda-time-version>
     <swagger-version>1.5.16</swagger-version>
@@ -132,6 +133,12 @@
       <groupId>io.swagger</groupId>
       <artifactId>swagger-jersey2-jaxrs</artifactId>
       <version>${swagger-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.electrum</groupId>
+      <artifactId>service-interface-base</artifactId>
+      <version>${service-interface-base-version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

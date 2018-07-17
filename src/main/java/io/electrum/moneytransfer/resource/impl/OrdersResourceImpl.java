@@ -1,15 +1,5 @@
 package io.electrum.moneytransfer.resource.impl;
 
-import io.electrum.moneytransfer.api.IOrdersResource;
-import io.electrum.moneytransfer.api.OrdersResource;
-import io.electrum.moneytransfer.factory.OrderMessageHandlerFactory;
-import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
-import io.electrum.moneytransfer.model.MoneyTransferConfirmation;
-import io.electrum.moneytransfer.model.MoneyTransferRedeemRequest;
-import io.electrum.moneytransfer.model.MoneyTransferReversal;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.Authorization;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.container.AsyncResponse;
@@ -22,7 +12,17 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("/moneytransfer/v0/orders")
+import io.electrum.moneytransfer.api.IOrdersResource;
+import io.electrum.moneytransfer.api.OrdersResource;
+import io.electrum.moneytransfer.factory.OrderMessageHandlerFactory;
+import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
+import io.electrum.moneytransfer.model.MoneyTransferConfirmation;
+import io.electrum.moneytransfer.model.MoneyTransferRedeemRequest;
+import io.electrum.moneytransfer.model.MoneyTransferReversal;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
+
+@Path("/moneytransfer/v2/orders")
 @Api(description = "the Money Transfer Retailer Order API", authorizations = { @Authorization("httpBasic") })
 public class OrdersResourceImpl extends OrdersResource implements IOrdersResource {
    private static OrdersResourceImpl instance = null;
@@ -37,7 +37,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
    }
 
    @Override
-   public void confirmPaymentImpl(
+   public void confirmPayment(
          MoneyTransferConfirmation body,
          SecurityContext securityContext,
          Request request,
@@ -54,7 +54,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
    }
 
    @Override
-   public void confirmRedeemImpl(
+   public void confirmRedeem(
          MoneyTransferConfirmation body,
          SecurityContext securityContext,
          Request request,
@@ -71,7 +71,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
    }
 
    @Override
-   public void createOrderImpl(
+   public void createOrder(
          MoneyTransferAuthRequest body,
          SecurityContext securityContext,
          Request request,
@@ -88,7 +88,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
    }
 
    @Override
-   public void lookupOrderImpl(
+   public void lookupOrder(
          String orderRedeemRef,
          String merchantId,
          String originatorInstId,
@@ -118,7 +118,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
    }
 
    @Override
-   public void redeemOrderImpl(
+   public void redeemOrder(
          MoneyTransferRedeemRequest body,
          SecurityContext securityContext,
          Request request,
@@ -135,7 +135,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
    }
 
    @Override
-   public void reversePaymentImpl(
+   public void reversePayment(
          MoneyTransferReversal body,
          SecurityContext securityContext,
          Request request,
@@ -152,7 +152,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
    }
 
    @Override
-   public void reverseRedeemImpl(
+   public void reverseRedeem(
          MoneyTransferReversal body,
          SecurityContext securityContext,
          Request request,
