@@ -1,7 +1,5 @@
 package io.electrum.moneytransfer.handler.admin;
 
-import java.util.UUID;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -9,7 +7,6 @@ import javax.ws.rs.core.UriInfo;
 import io.electrum.moneytransfer.handler.BaseHandler;
 import io.electrum.moneytransfer.model.ErrorDetail;
 import io.electrum.moneytransfer.server.util.AdminUtils;
-import io.electrum.moneytransfer.server.util.MoneyTransferUtils;
 
 public class GetFeeQuoteHandler extends BaseHandler {
 
@@ -29,38 +26,29 @@ public class GetFeeQuoteHandler extends BaseHandler {
 
       String validationString = getValidationStringGetFeeQuote(amount, amountIncludesFee, originatorInstId, receiverId);
       if (validationString.length() > 0) {
-         return Response.status(400)
-               .entity(
-                     MoneyTransferUtils.getErrorDetail(
-                           UUID.randomUUID().toString(),
-                           null,
-                           ErrorDetail.ErrorTypeEnum.FORMAT_ERROR,
-                           validationString))
-               .build();
+         return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.FORMAT_ERROR, validationString);
+      }
+
+      if (!checkBasicAuth(receiverId)) {
+         return buildErrorDetailResponse(
+               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+               "ReceiverId must match basic auth username");
       }
 
       if (amount < 0) {
-         return Response.status(400)
-               .entity(
-                     MoneyTransferUtils.getErrorDetail(
-                           UUID.randomUUID().toString(),
-                           null,
-                           ErrorDetail.ErrorTypeEnum.INVALID_AMOUNT,
-                           null))
-               .build();
+         return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.INVALID_AMOUNT, null);
       }
 
-      return Response.status(200)
-            .entity(
-                  AdminUtils.getMoneyTransferFeeQuote(
-                        amount,
-                        amountIncludesFee,
-                        idNumber,
-                        merchantId,
-                        originatorInstId,
-                        receiverId,
-                        senderCell,
-                        recipientCell))
+      return Response.ok(
+            AdminUtils.getMoneyTransferFeeQuote(
+                  amount,
+                  amountIncludesFee,
+                  idNumber,
+                  merchantId,
+                  originatorInstId,
+                  receiverId,
+                  senderCell,
+                  recipientCell))
             .build();
    }
 

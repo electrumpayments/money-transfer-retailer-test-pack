@@ -72,7 +72,7 @@ public class MoneyTransferUtils {
             new ErrorMessages("Duplicate record", "E11", "Duplicate record"));
       ERROR_MESSAGES_MAP.put(
             ErrorDetail.ErrorTypeEnum.FORMAT_ERROR,
-            new ErrorMessages("Message format error", "E12", "Message could not be deserialized"));
+            new ErrorMessages("Message format error", "E12", "Bad message format"));
       ERROR_MESSAGES_MAP
             .put(ErrorDetail.ErrorTypeEnum.SYSTEM_ERROR, new ErrorMessages("Internal system error", null, null));
       ERROR_MESSAGES_MAP.put(
@@ -121,11 +121,12 @@ public class MoneyTransferUtils {
 
    protected static String buildFormatErrorString(Set<ConstraintViolation<?>> violations) {
       if (violations.size() == 0) {
-         return null;
+         return "";
       }
 
       StringBuilder sb  = new StringBuilder();
       for (ConstraintViolation violation : violations) {
+         sb.append("Field: ").append(violation.getPropertyPath()).append("  Message: ");
          sb.append(violation.getMessage()).append("\n");
       }
 
@@ -170,6 +171,14 @@ public class MoneyTransferUtils {
       if (reversal != null) {
          validateBasicAdvice(reversal, violations);
          violations.addAll(validate(reversal.getReversalReason()));
+      }
+   }
+
+   protected static void validateInstitution(Institution institution, Set<ConstraintViolation<?>> violations) {
+      violations.addAll(validate(institution));
+      if (institution != null) {
+         violations.addAll(validate(institution.getId()));
+         violations.addAll(validate(institution.getName()));
       }
    }
 

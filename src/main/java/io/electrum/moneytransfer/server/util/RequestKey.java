@@ -1,8 +1,7 @@
 package io.electrum.moneytransfer.server.util;
 
 public class RequestKey {
-   public static final String GET_CUSTOMER_INFO_RESOURCE = "getCustomerInfo";
-   public static final String CREATE_OR_UPDATE_CUSTOMER_RESOURCE = "createOrUpdateCustomer";
+   public static final String CUSTOMER_RESOURCE = "adminCustomer";
    public static final String CREATE_ORDER_RESOURCE = "createOrder";
    public static final String CONFIRM_PAYMENT_RESOURCE = "confirmPayment";
    public static final String REVERSE_PAYMENT_RESOURCE = "reversePayment";

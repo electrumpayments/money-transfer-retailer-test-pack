@@ -44,4 +44,8 @@ public abstract class BaseHandler {
       return buildErrorDetailResponse(UUID.randomUUID().toString(), null, errorType, detailedMessage);
    }
 
+   protected boolean checkBasicAuth(String receiverId) {
+      return receiverId != null && username != null && username.equals(receiverId);
+   }
+
 }

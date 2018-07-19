@@ -17,6 +17,8 @@ public class AdminUtils {
       Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
 
       if (moneyTransferAdminMessage != null) {
+         violations.addAll(MoneyTransferUtils.validate(moneyTransferAdminMessage.getCustomerProfileId()));
+         MoneyTransferUtils.validateInstitution(moneyTransferAdminMessage.getReceiver(), violations);
          MoneyTransferUtils.validateOriginator(moneyTransferAdminMessage.getOriginator(), violations);
          MoneyTransferUtils.validatePersonalDetails(moneyTransferAdminMessage.getCustomerDetails(), violations);
       }

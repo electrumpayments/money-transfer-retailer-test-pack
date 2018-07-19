@@ -1,0 +1,9 @@
+{
+	"info": {
+		"name": "Money Transfer Retailer Interface",
+		"_postman_id": "aeea3262-5a9f-0b0d-bb49-8faee2a0fffc",
+		"description": "The Electrum Money Transfer Retailer Interface describes an interface for money transfers initiated at a retailer.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": []
+}

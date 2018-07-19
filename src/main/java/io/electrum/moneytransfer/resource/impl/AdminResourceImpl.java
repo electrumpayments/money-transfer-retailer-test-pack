@@ -25,7 +25,7 @@ import io.swagger.annotations.Authorization;
 @Api(description = "the Money Transfer Retailer Admin API", authorizations = { @Authorization("httpBasic") })
 public class AdminResourceImpl extends AdminResource implements IAdminResource {
    private static AdminResourceImpl instance = null;
-   private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
+   private static final Logger LOGGER = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
 
    @Override
    protected IAdminResource getResourceImplementation() {
@@ -44,12 +44,12 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
          AsyncResponse asyncResponse,
          UriInfo uriInfo,
          HttpServletRequest httpServletRequest) {
-      log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
-      log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
+      LOGGER.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
+      LOGGER.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
 
       Response rsp = AdminMessageHandlerFactory.getCreateOrUpdateCustomerHandler(httpHeaders, uriInfo).handle(body);
 
-      log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
+      LOGGER.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
       asyncResponse.resume(rsp);
    }
 
@@ -68,8 +68,8 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
          UriInfo uriInfo,
          HttpServletRequest httpServletRequest)
          throws NotFoundException {
-      log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
-      log.debug(
+      LOGGER.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
+      LOGGER.debug(
             String.format(
                   "%s %s\nID Number: %s\nId Type: %s\nId Country Code: %s\nMerchant ID: %s\nOriginator Institute ID: %s\nReceiver ID: %s",
                   httpServletRequest.getMethod(),
@@ -83,7 +83,7 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
       Response rsp =
             AdminMessageHandlerFactory.getGetCustomerInfoHandler(httpHeaders, uriInfo)
                   .handle(idNumber, idType, idCountryCode, merchantId, originatorInstId, receiverId);
-      log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
+      LOGGER.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
    }
@@ -105,8 +105,8 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
          UriInfo uriInfo,
          HttpServletRequest httpServletRequest)
          throws NotFoundException {
-      log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
-      log.debug(
+      LOGGER.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
+      LOGGER.debug(
             String.format(
                   "%s %s\nAmount %s\n Amount Includes Fee: %s\nID Number: %s\nMerchant ID: %s\nOriginator Institute ID: %s\nReceiver ID: %s\nSender Cell:%s\nRecipient Cell %s",
                   httpServletRequest.getMethod(),
@@ -129,7 +129,7 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
                   receiverId,
                   senderCell,
                   recipientCell);
-      log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
+      LOGGER.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
    }
