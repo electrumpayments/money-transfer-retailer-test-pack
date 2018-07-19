@@ -1,5 +1,6 @@
-package io.electrum.moneytransfer.handler;
+package io.electrum.moneytransfer.handler.order;
 
+import io.electrum.moneytransfer.handler.BaseHandler;
 import io.electrum.moneytransfer.model.ErrorDetail;
 import io.electrum.moneytransfer.model.ErrorDetail.ErrorTypeEnum;
 import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
@@ -17,10 +18,13 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CreateOrderHandler {
-   private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
+public class CreateOrderHandler extends BaseHandler {
 
-   public Response handle(MoneyTransferAuthRequest request, HttpHeaders httpHeaders, UriInfo uriInfo) {
+   public CreateOrderHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      super(httpHeaders, uriInfo);
+   }
+
+   public Response handle(MoneyTransferAuthRequest request) {
       try {
          String authString = MoneyTransferUtils.getAuthString(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION));
          String username = MoneyTransferUtils.getUsernameFromAuth(authString);

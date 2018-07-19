@@ -1,39 +1,43 @@
 package io.electrum.moneytransfer.factory;
 
-import io.electrum.moneytransfer.handler.ConfirmPaymentHandler;
-import io.electrum.moneytransfer.handler.ConfirmRedeemHandler;
-import io.electrum.moneytransfer.handler.CreateOrderHandler;
-import io.electrum.moneytransfer.handler.LookupOrderHandler;
-import io.electrum.moneytransfer.handler.RedeemOrderHandler;
-import io.electrum.moneytransfer.handler.ReversePaymentHandler;
-import io.electrum.moneytransfer.handler.ReverseRedeemHandler;
+import javax.swing.*;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.UriInfo;
+
+import io.electrum.moneytransfer.handler.order.ConfirmPaymentHandler;
+import io.electrum.moneytransfer.handler.order.ConfirmRedeemHandler;
+import io.electrum.moneytransfer.handler.order.CreateOrderHandler;
+import io.electrum.moneytransfer.handler.order.LookupOrderHandler;
+import io.electrum.moneytransfer.handler.order.RedeemOrderHandler;
+import io.electrum.moneytransfer.handler.order.ReversePaymentHandler;
+import io.electrum.moneytransfer.handler.order.ReverseRedeemHandler;
 
 public class OrderMessageHandlerFactory {
-   public static ConfirmPaymentHandler getConfirmPaymentHandler() {
-      return new ConfirmPaymentHandler();
+   public static ConfirmPaymentHandler getConfirmPaymentHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      return new ConfirmPaymentHandler(httpHeaders, uriInfo);
    }
 
-   public static ConfirmRedeemHandler getConfirmRedeemHandler() {
-      return new ConfirmRedeemHandler();
+   public static ConfirmRedeemHandler getConfirmRedeemHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      return new ConfirmRedeemHandler(httpHeaders, uriInfo);
    }
 
-   public static CreateOrderHandler getCreateOrderHandler() {
-      return new CreateOrderHandler();
+   public static CreateOrderHandler getCreateOrderHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      return new CreateOrderHandler(httpHeaders, uriInfo);
    }
 
-   public static LookupOrderHandler getLookupOrderHandler() {
-      return new LookupOrderHandler();
+   public static LookupOrderHandler getLookupOrderHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      return new LookupOrderHandler(httpHeaders, uriInfo);
    }
 
-   public static RedeemOrderHandler getRedeemOrderHandler() {
-      return new RedeemOrderHandler();
+   public static RedeemOrderHandler getRedeemOrderHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      return new RedeemOrderHandler(httpHeaders, uriInfo);
    }
 
-   public static ReversePaymentHandler getReversePaymentHandler() {
-      return new ReversePaymentHandler();
+   public static ReversePaymentHandler getReversePaymentHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      return new ReversePaymentHandler(httpHeaders, uriInfo);
    }
 
-   public static ReverseRedeemHandler getReverseRedeemHandler() {
-      return new ReverseRedeemHandler();
+   public static ReverseRedeemHandler getReverseRedeemHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+      return new ReverseRedeemHandler(httpHeaders, uriInfo);
    }
 }

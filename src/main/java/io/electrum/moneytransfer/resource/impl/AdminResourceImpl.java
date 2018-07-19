@@ -46,9 +46,10 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = AdminMessageHandlerFactory.getCreateOrUpdateCustomerHandler().handle(body, httpHeaders, uriInfo);
-      log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
+      Response rsp = AdminMessageHandlerFactory.getCreateOrUpdateCustomerHandler(httpHeaders, uriInfo).handle(body);
+
+      log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
       asyncResponse.resume(rsp);
    }
 
@@ -69,17 +70,19 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
          throws NotFoundException {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(
-              String.format(
-                      "%s %s\nID Number: %s\nMerchant ID: %s\nOriginator Institute ID: %s\nReceiver ID: %",
-                      httpServletRequest.getMethod(),
-                      uriInfo.getPath(),
-                      idNumber,
-                      merchantId,
-                      originatorInstId,
-                      receiverId));
+            String.format(
+                  "%s %s\nID Number: %s\nId Type: %s\nId Country Code: %s\nMerchant ID: %s\nOriginator Institute ID: %s\nReceiver ID: %s",
+                  httpServletRequest.getMethod(),
+                  uriInfo.getPath(),
+                  idNumber,
+                  idType,
+                  idCountryCode,
+                  merchantId,
+                  originatorInstId,
+                  receiverId));
       Response rsp =
-              AdminMessageHandlerFactory.getGetCustomerInfoHandler()
-                      .handle(idNumber, merchantId, originatorInstId, receiverId, httpHeaders, uriInfo);
+            AdminMessageHandlerFactory.getGetCustomerInfoHandler(httpHeaders, uriInfo)
+                  .handle(idNumber, idType, idCountryCode, merchantId, originatorInstId, receiverId);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -102,6 +105,32 @@ public class AdminResourceImpl extends AdminResource implements IAdminResource {
          UriInfo uriInfo,
          HttpServletRequest httpServletRequest)
          throws NotFoundException {
+      log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
+      log.debug(
+            String.format(
+                  "%s %s\nAmount %s\n Amount Includes Fee: %s\nID Number: %s\nMerchant ID: %s\nOriginator Institute ID: %s\nReceiver ID: %s\nSender Cell:%s\nRecipient Cell %s",
+                  httpServletRequest.getMethod(),
+                  uriInfo.getPath(),
+                  amount != null ? amount.toString() : "",
+                  amountIncludesFee != null ? amountIncludesFee.toString() : "",
+                  idNumber,
+                  merchantId,
+                  originatorInstId,
+                  receiverId,
+                  senderCell,
+                  recipientCell));
+      Response rsp =
+            AdminMessageHandlerFactory.getGetFeeQuoteHandler(httpHeaders, uriInfo).handle(
+                  amount,
+                  amountIncludesFee,
+                  idNumber,
+                  merchantId,
+                  originatorInstId,
+                  receiverId,
+                  senderCell,
+                  recipientCell);
+      log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
+      asyncResponse.resume(rsp);
    }
 }

@@ -22,7 +22,7 @@ import io.electrum.moneytransfer.model.MoneyTransferReversal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.Authorization;
 
-@Path("/moneytransfer/v2/orders")
+@Path("/moneytransfer/v2/order")
 @Api(description = "the Money Transfer Retailer Order API", authorizations = { @Authorization("httpBasic") })
 public class OrdersResourceImpl extends OrdersResource implements IOrdersResource {
    private static OrdersResourceImpl instance = null;
@@ -47,7 +47,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = OrderMessageHandlerFactory.getConfirmPaymentHandler().handle(body, httpHeaders, uriInfo);
+      Response rsp = OrderMessageHandlerFactory.getConfirmPaymentHandler(httpHeaders, uriInfo).handle(body);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -64,7 +64,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = OrderMessageHandlerFactory.getConfirmRedeemHandler().handle(body, httpHeaders, uriInfo);
+      Response rsp = OrderMessageHandlerFactory.getConfirmRedeemHandler(httpHeaders, uriInfo).handle(body);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -81,7 +81,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = OrderMessageHandlerFactory.getCreateOrderHandler().handle(body, httpHeaders, uriInfo);
+      Response rsp = OrderMessageHandlerFactory.getCreateOrderHandler(httpHeaders, uriInfo).handle(body);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -110,8 +110,8 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
                   originatorInstId,
                   receiverId));
       Response rsp =
-            OrderMessageHandlerFactory.getLookupOrderHandler()
-                  .handle(orderRedeemRef, merchantId, originatorInstId, receiverId, httpHeaders, uriInfo);
+            OrderMessageHandlerFactory.getLookupOrderHandler(httpHeaders, uriInfo)
+                  .handle(orderRedeemRef, merchantId, originatorInstId, receiverId);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -128,7 +128,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = OrderMessageHandlerFactory.getRedeemOrderHandler().handle(body, httpHeaders, uriInfo);
+      Response rsp = OrderMessageHandlerFactory.getRedeemOrderHandler(httpHeaders, uriInfo).handle(body);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -145,7 +145,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = OrderMessageHandlerFactory.getReversePaymentHandler().handle(body, httpHeaders, uriInfo);
+      Response rsp = OrderMessageHandlerFactory.getReversePaymentHandler(httpHeaders, uriInfo).handle(body);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
@@ -162,7 +162,7 @@ public class OrdersResourceImpl extends OrdersResource implements IOrdersResourc
          HttpServletRequest httpServletRequest) {
       log.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
       log.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), body));
-      Response rsp = OrderMessageHandlerFactory.getReverseRedeemHandler().handle(body, httpHeaders, uriInfo);
+      Response rsp = OrderMessageHandlerFactory.getReverseRedeemHandler(httpHeaders, uriInfo).handle(body);
       log.debug(String.format("Entity returned:\n%s", rsp.getEntity()));
 
       asyncResponse.resume(rsp);
