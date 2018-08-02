@@ -31,7 +31,7 @@
   </scm>
 
   <properties>
-    <money-transfer-retailer-version>2.0.0</money-transfer-retailer-version>
+    <money-transfer-retailer-version>2.0.1</money-transfer-retailer-version>
     <service-interface-base-version>3.9.0</service-interface-base-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <joda-time-version>2.9.9</joda-time-version>
@@ -48,6 +48,7 @@
     <maven-source-plugin-version>3.0.1</maven-source-plugin-version>
     <maven-javadoc-plugin-version>2.10.4</maven-javadoc-plugin-version>
     <jackson-version>2.9.0</jackson-version>
+    <electrum.dependency.dropwizard-jersey.version>1.1.2</electrum.dependency.dropwizard-jersey.version>
   </properties>
 
   <dependencies>
@@ -138,6 +139,47 @@
       <groupId>io.electrum</groupId>
       <artifactId>service-interface-base</artifactId>
       <version>${service-interface-base-version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-jersey</artifactId>
+      <version>${electrum.dependency.dropwizard-jersey.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.dropwizard.metrics</groupId>
+          <artifactId>metrics-jersey2</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-server</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-webapp</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.dropwizard</groupId>
+          <artifactId>dropwizard-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

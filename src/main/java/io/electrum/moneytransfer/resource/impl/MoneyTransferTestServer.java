@@ -20,6 +20,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
+import io.dropwizard.jersey.validation.DropwizardConfiguredValidator;
+import io.dropwizard.jersey.validation.HibernateValidationFeature;
+import io.dropwizard.jersey.validation.Validators;
 import io.electrum.moneytransfer.model.MoneyTransferAdminMessage;
 import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
 import io.electrum.moneytransfer.model.MoneyTransferAuthResponse;
@@ -28,6 +31,7 @@ import io.electrum.moneytransfer.model.MoneyTransferLookupResponse;
 import io.electrum.moneytransfer.model.MoneyTransferRedeemRequest;
 import io.electrum.moneytransfer.model.MoneyTransferRedeemResponse;
 import io.electrum.moneytransfer.model.MoneyTransferReversal;
+import io.electrum.moneytransfer.server.MoneyTransferViolationExceptionMapper;
 import io.electrum.moneytransfer.server.util.RequestKey;
 
 public class MoneyTransferTestServer extends ResourceConfig {
@@ -55,6 +59,12 @@ public class MoneyTransferTestServer extends ResourceConfig {
 
       register(MyObjectMapperProvider.class);
       register(JacksonFeature.class);
+
+      register(
+            new HibernateValidationFeature(
+                  new DropwizardConfiguredValidator(Validators.newValidatorFactory().getValidator())));
+      register(new MoneyTransferViolationExceptionMapper());
+
       log.debug("Initing new TestServer");
    }
 

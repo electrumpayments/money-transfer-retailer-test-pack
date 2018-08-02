@@ -25,11 +25,6 @@ public class GetCustomerInfoHandler extends BaseHandler {
          String originatorInstId,
          String receiverId) {
 
-      String validationString = getValidationStringGetCustomerInfoHandler(idNumber, receiverId);
-      if (validationString.length() > 0) {
-         return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.FORMAT_ERROR, validationString);
-      }
-
       if (!checkBasicAuth(receiverId)) {
          return buildErrorDetailResponse(
                ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
@@ -40,41 +35,30 @@ public class GetCustomerInfoHandler extends BaseHandler {
       MoneyTransferAdminMessage moneyTransferAdminMessage = MoneyTransferTestServer.getAdminRecords().get(key);
 
       if (moneyTransferAdminMessage == null) {
-         return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, validationString);
+         return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
       }
 
-      if (moneyTransferAdminMessage.getCustomerDetails().getIdNumber().equals(idNumber)
-            && moneyTransferAdminMessage.getReceiver().getId().equals(receiverId)) {
+      if (idNumber.equals(moneyTransferAdminMessage.getCustomerDetails().getIdNumber())
+            && receiverId.equals(moneyTransferAdminMessage.getReceiver().getId())) {
 
          if (idType != null && !idType.equals(moneyTransferAdminMessage.getCustomerDetails().getIdType())) {
-            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, validationString);
+            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
          if (idCountryCode != null
                && !idCountryCode.equals(moneyTransferAdminMessage.getCustomerDetails().getIdCountryCode())) {
-            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, validationString);
+            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
          if (merchantId != null
                && !merchantId.equals(moneyTransferAdminMessage.getOriginator().getMerchant().getMerchantId())) {
-            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, validationString);
+            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
          if (originatorInstId != null
                && !originatorInstId.equals(moneyTransferAdminMessage.getOriginator().getInstitution().getId())) {
-            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, validationString);
+            return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
          return Response.ok(moneyTransferAdminMessage).build();
       }
 
-      return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, validationString);
-   }
-
-   private String getValidationStringGetCustomerInfoHandler(String idNumber, String receiverId) {
-      StringBuilder sb = new StringBuilder();
-      if (idNumber == null) {
-         sb.append("Query param, idNumber is null.\n");
-      }
-      if (receiverId == null) {
-         sb.append("Query param, receiverId is null.\n");
-      }
-      return sb.toString();
+      return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
    }
 }

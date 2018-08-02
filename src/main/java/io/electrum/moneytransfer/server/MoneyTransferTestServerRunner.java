@@ -1,7 +1,5 @@
 package io.electrum.moneytransfer.server;
 
-import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
-
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -18,6 +16,8 @@ import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
 
 public class MoneyTransferTestServerRunner {
 

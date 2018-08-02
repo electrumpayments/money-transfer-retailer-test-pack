@@ -22,7 +22,7 @@ import io.electrum.moneytransfer.model.MoneyTransferReversal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.Authorization;
 
-@Path("/moneytransfer/v2/order")
+@Path("/moneytransfer/v2/orders")
 @Api(description = "the Money Transfer Retailer Order API", authorizations = { @Authorization("httpBasic") })
 public class OrdersResourceImpl extends OrdersResource implements IOrdersResource {
    private static OrdersResourceImpl instance = null;

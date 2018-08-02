@@ -1,19 +1,8 @@
 package io.electrum.moneytransfer.server.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
-import io.electrum.moneytransfer.model.Address;
-import io.electrum.vas.model.Amounts;
-import io.electrum.vas.model.BasicAdvice;
-import io.electrum.vas.model.BasicReversal;
-import io.electrum.vas.model.Tender;
-import io.electrum.vas.model.TenderAdvice;
-import io.electrum.vas.model.Transaction;
 import org.glassfish.jersey.internal.util.Base64;
 
 import io.electrum.moneytransfer.model.ErrorDetail;
@@ -23,10 +12,6 @@ import io.electrum.vas.model.LedgerAmount;
 import io.electrum.vas.model.Merchant;
 import io.electrum.vas.model.MerchantName;
 import io.electrum.vas.model.Originator;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 
 public class MoneyTransferUtils {
 
@@ -110,118 +95,6 @@ public class MoneyTransferUtils {
       }
    }
 
-   static <T> Set<ConstraintViolation<T>> validate(T tInstance) {
-      if (tInstance == null) {
-         return new HashSet<ConstraintViolation<T>>();
-      }
-      Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-      Set<ConstraintViolation<T>> violations = validator.validate(tInstance);
-      return violations;
-   }
-
-   protected static String buildFormatErrorString(Set<ConstraintViolation<?>> violations) {
-      if (violations.size() == 0) {
-         return "";
-      }
-
-      StringBuilder sb  = new StringBuilder();
-      for (ConstraintViolation violation : violations) {
-         sb.append("Field: ").append(violation.getPropertyPath()).append("  Message: ");
-         sb.append(violation.getMessage()).append("\n");
-      }
-
-      return sb.toString();
-   }
-
-   protected static void validateTransaction(Transaction transaction, Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(transaction));
-      if (transaction != null) {
-         violations.addAll(validate(transaction.getId()));
-         violations.addAll(validate(transaction.getTime()));
-         validateOriginator(transaction.getOriginator(), violations);
-         violations.addAll(validate(transaction.getClient()));
-         violations.addAll(validate(transaction.getSettlementEntity()));
-         violations.addAll(validate(transaction.getReceiver()));
-         violations.addAll(validate(transaction.getThirdPartyIdentifiers()));
-         violations.addAll(validate(transaction.getSlipData()));
-         violations.addAll(validate(transaction.getBasketRef()));
-         violations.addAll(validate(transaction.getTranType()));
-         violations.addAll(validate(transaction.getSrcAccType()));
-         violations.addAll(validate(transaction.getDestAccType()));
-      }
-   }
-
-   protected static void validateOriginator(Originator originator, Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(originator));
-      if (originator != null) {
-         violations.addAll(validate(originator.getInstitution()));
-         violations.addAll(validate(originator.getTerminalId()));
-         Merchant merchant = originator.getMerchant();
-         violations.addAll(validate(merchant));
-         if (merchant != null) {
-            violations.addAll(validate(merchant.getMerchantId()));
-            violations.addAll(validate(merchant.getMerchantType()));
-            violations.addAll(validate(merchant.getMerchantName()));
-         }
-      }
-   }
-
-   protected static void validateBasicReversal(BasicReversal reversal, Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(reversal));
-      if (reversal != null) {
-         validateBasicAdvice(reversal, violations);
-         violations.addAll(validate(reversal.getReversalReason()));
-      }
-   }
-
-   protected static void validateInstitution(Institution institution, Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(institution));
-      if (institution != null) {
-         violations.addAll(validate(institution.getId()));
-         violations.addAll(validate(institution.getName()));
-      }
-   }
-
-   protected static void validateBasicAdvice(BasicAdvice basicAdvice, Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(basicAdvice));
-      if (basicAdvice != null) {
-         violations.addAll(validate(basicAdvice.getId()));
-         violations.addAll(validate(basicAdvice.getRequestId()));
-         violations.addAll(validate(basicAdvice.getThirdPartyIdentifiers()));
-         violations.addAll(validate(basicAdvice.getTime()));
-      }
-   }
-
-   protected static void validatePersonalDetails(PersonalDetails personalDetails, Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(personalDetails));
-      if (personalDetails != null) {
-         violations.addAll(validate(personalDetails.getFirstName()));
-         violations.addAll(validate(personalDetails.getLastName()));
-         violations.addAll(validate(personalDetails.getDateOfBirth()));
-         violations.addAll(validate(personalDetails.getEmail()));
-         violations.addAll(validate(personalDetails.getContactNumber()));
-         violations.addAll(validate(personalDetails.getAltContactHome()));
-         violations.addAll(validate(personalDetails.getAltContactWork()));
-         validateAddress(personalDetails.getAddress(), violations);
-         violations.addAll(validate(personalDetails.getIdNumber()));
-         violations.addAll(validate(personalDetails.getIdType()));
-         violations.addAll(validate(personalDetails.getIdCountryCode()));
-         violations.addAll(validate(personalDetails.getNationality()));
-      }
-   }
-
-   protected static void validateAddress(Address address, Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(address));
-      if (address != null) {
-         violations.addAll(validate(address.getAddressLine1()));
-         violations.addAll(validate(address.getAddressLine2()));
-         violations.addAll(validate(address.getCity()));
-         violations.addAll(validate(address.getProvince()));
-         violations.addAll(validate(address.getPostCode()));
-         violations.addAll(validate(address.getCountry()));
-      }
-   }
-
    public static String getAuthString(String authHeader) {
       if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Basic ")) {
          return null;
@@ -246,7 +119,7 @@ public class MoneyTransferUtils {
       return password;
    }
 
-   protected static Originator getOriginator(String originatorInstId, String merchantId) {
+   public static Originator getOriginator(String originatorInstId, String merchantId) {
       Originator originator = new Originator();
       originator.setMerchant(getRandomMerchant(merchantId));
       originator.setInstitution(getRandomInstitution(originatorInstId));
@@ -254,14 +127,14 @@ public class MoneyTransferUtils {
       return originator;
    }
 
-   protected static Institution getRandomInstitution(String instId) {
+   public static Institution getRandomInstitution(String instId) {
       Institution institution = new Institution();
       institution.setId(instId);
       institution.setName(RandomData.randomAZ(6));
       return institution;
    }
 
-   private static Merchant getRandomMerchant(String merchantId) {
+   public static Merchant getRandomMerchant(String merchantId) {
       Merchant merchant = new Merchant();
       merchant.setMerchantId(merchantId);
       merchant.setMerchantType("Retailer");
@@ -269,14 +142,14 @@ public class MoneyTransferUtils {
       return merchant;
    }
 
-   protected static LedgerAmount getLedgerAmount(Long amount) {
+   public static LedgerAmount getLedgerAmount(Long amount) {
       LedgerAmount ledgerAmount = new LedgerAmount();
       ledgerAmount.setAmount(amount == null ? new Random().nextLong() : amount);
       ledgerAmount.setCurrency("710");
       return ledgerAmount;
    }
 
-   protected static PersonalDetails getPersonalDetails(String idNumber, String cell) {
+   public static PersonalDetails getPersonalDetails(String idNumber, String cell) {
       PersonalDetails personalDetails = new PersonalDetails();
       personalDetails.setIdNumber(idNumber);
       personalDetails.setContactNumber(cell);

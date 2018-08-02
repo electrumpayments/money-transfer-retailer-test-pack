@@ -1,43 +1,28 @@
 package io.electrum.moneytransfer.server.util;
 
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.ws.rs.core.Response;
+
 import io.electrum.moneytransfer.model.ErrorDetail;
 import io.electrum.moneytransfer.model.ErrorDetail.ErrorTypeEnum;
 import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
 import io.electrum.moneytransfer.model.MoneyTransferAuthResponse;
+import io.electrum.moneytransfer.model.MoneyTransferLookupResponse;
 import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
-import io.electrum.moneytransfer.server.model.DetailMessage;
-import io.electrum.moneytransfer.server.model.FormatError;
 import io.electrum.vas.model.BasicReversal;
 import io.electrum.vas.model.Institution;
-import io.electrum.vas.model.Merchant;
-import io.electrum.vas.model.Originator;
 import io.electrum.vas.model.SlipData;
 import io.electrum.vas.model.ThirdPartyIdentifier;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.ws.rs.core.Response;
 
 public class OrderUtils {
    private static SecureRandom secRandom = new SecureRandom();
    private static ConcurrentHashMap<String, String> orderRedeemRef = new ConcurrentHashMap<>();
 
-   public static Boolean doesOrderExist(String redeemRef, String redeemOrderId) {
-      String orderId = orderRedeemRef.get(redeemRef);
-      if (redeemOrderId.equals(orderId)) {
-         return Boolean.TRUE;
-      } else {
-         return Boolean.FALSE;
-      }
-   }
+
 
    public static MoneyTransferAuthResponse authRspFromReq(MoneyTransferAuthRequest req) {
       MoneyTransferAuthResponse rsp = new MoneyTransferAuthResponse();
@@ -81,6 +66,58 @@ public class OrderUtils {
       return rsp;
    }
 
+   public static boolean doesOrderExist(String id, String username, String password) {
+      RequestKey requestKey = new RequestKey(username, password, RequestKey.CREATE_ORDER_RESOURCE, id);
+      return MoneyTransferTestServer.getAuthRequestRecords().get(requestKey) != null;
+   }
+
+   public static Status getOrderStatus(String id, String requestId, String username, String password) {
+      if (requestId == null) {
+         RequestKey requestKey = new RequestKey(username, password, RequestKey.CREATE_ORDER_RESOURCE, id);
+         if (MoneyTransferTestServer.getAuthRequestRecords().get(requestKey) != null) {
+            return Status.ORDER_CREATED;
+         }
+      } else {
+         RequestKey requestKey = new RequestKey(username, password, RequestKey.CREATE_ORDER_RESOURCE, requestId);
+         if (MoneyTransferTestServer.getAuthRequestRecords().get(requestKey) != null) {
+            requestKey = new RequestKey(username, password, RequestKey.CONFIRM_PAYMENT_RESOURCE, id);
+            if (MoneyTransferTestServer.getConfirmationRecords().get(requestKey) != null) {
+               return Status.ORDER_CONFIRMED;
+            }
+
+            requestKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, id);
+            if (MoneyTransferTestServer.getReversalRecords().get(requestKey) != null) {
+               return Status.ORDER_REVERSED;
+            }
+         }
+      }
+      return Status.UNABLE_TO_LOCATE_RECORD;
+   }
+
+   //TODO
+   public static Status getRedemptionStatus(String id, String requestId, String username, String password) {
+      if (requestId == null) {
+         RequestKey requestKey = new RequestKey(username, password, RequestKey.REDEEM_ORDER_RESOURCE, id);
+         if (MoneyTransferTestServer.getRedeemRequestRecords().get(requestKey) != null) {
+            return Status.ORDER_CREATED;
+         }
+      } else {
+         RequestKey requestKey = new RequestKey(username, password, RequestKey.CREATE_ORDER_RESOURCE, requestId);
+         if (MoneyTransferTestServer.getAuthRequestRecords().get(requestKey) != null) {
+            requestKey = new RequestKey(username, password, RequestKey.CONFIRM_PAYMENT_RESOURCE, id);
+            if (MoneyTransferTestServer.getConfirmationRecords().get(requestKey) != null) {
+               return Status.ORDER_CONFIRMED;
+            }
+
+            requestKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, id);
+            if (MoneyTransferTestServer.getReversalRecords().get(requestKey) != null) {
+               return Status.ORDER_REVERSED;
+            }
+         }
+      }
+      return Status.UNABLE_TO_LOCATE_RECORD;
+   }
+
    public static Response canCreateOrder(String id, String username, String password) {
       ErrorDetail errorDetail = new ErrorDetail().id(id);
       RequestKey requestKey = new RequestKey(username, password, RequestKey.CREATE_ORDER_RESOURCE, id);
@@ -104,66 +141,4 @@ public class OrderUtils {
       return Response.status(400).entity(errorDetail).build();
    }
 
-   public static Response validateCreateOrderRequest(MoneyTransferAuthRequest authRequest) {
-      Set<ConstraintViolation<?>> violations = new HashSet<ConstraintViolation<?>>();
-      validateCreateOrderRequest(authRequest, violations);
-      ErrorDetail errorDetail = buildFormatErrorRsp(violations);
-      if (errorDetail == null) {
-         return null;
-      }
-      errorDetail.id(authRequest.getId());
-      return Response.status(400).entity(errorDetail).build();
-   }
-
-   private static <T> Set<ConstraintViolation<T>> validate(T tInstance) {
-      if (tInstance == null) {
-         return new HashSet<ConstraintViolation<T>>();
-      }
-      Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-      return validator.validate(tInstance);
-   }
-
-   public static void validateCreateOrderRequest(
-         MoneyTransferAuthRequest authRequest,
-         Set<ConstraintViolation<?>> violations) {
-      violations.addAll(validate(authRequest));
-      if (authRequest != null) {
-         violations.addAll(validate(authRequest.getRecipientDetails()));
-         violations.addAll(validate(authRequest.getSenderDetails()));
-         violations.addAll(validate(authRequest.getAmount()));
-         violations.addAll(validate(authRequest.getClient()));
-         violations.addAll(validate(authRequest.getId()));
-         Originator originator = authRequest.getOriginator();
-         violations.addAll(validate(originator));
-         if (originator != null) {
-            violations.addAll(validate(originator.getInstitution()));
-            violations.addAll(validate(originator.getTerminalId()));
-            Merchant merchant = originator.getMerchant();
-            violations.addAll(validate(merchant));
-            if (merchant != null) {
-               violations.addAll(validate(merchant.getMerchantId()));
-               violations.addAll(validate(merchant.getMerchantType()));
-               violations.addAll(validate(merchant.getMerchantName()));
-            }
-         }
-         violations.addAll(validate(authRequest.getReceiver()));
-         violations.addAll(validate(authRequest.getSettlementEntity()));
-         violations.addAll(validate(authRequest.getThirdPartyIdentifiers()));
-         violations.addAll(validate(authRequest.getTime()));
-      }
-   }
-
-   private static ErrorDetail buildFormatErrorRsp(Set<ConstraintViolation<?>> violations) {
-      if (violations.isEmpty()) {
-         return null;
-      }
-      List<FormatError> formatErrors = new ArrayList<FormatError>(violations.size());
-      for (ConstraintViolation<?> violation : violations) {
-         formatErrors.add(
-               new FormatError().msg(violation.getMessage()).field(violation.getPropertyPath().toString()).value(
-                     violation.getInvalidValue() == null ? "null" : violation.getInvalidValue().toString()));
-      }
-      return new ErrorDetail().errorType(ErrorTypeEnum.FORMAT_ERROR).errorMessage("Bad formatting").detailMessage(
-            new DetailMessage().formatErrors(formatErrors));
-   }
 }
