@@ -27,12 +27,12 @@ import io.electrum.moneytransfer.model.MoneyTransferAdminMessage;
 import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
 import io.electrum.moneytransfer.model.MoneyTransferAuthResponse;
 import io.electrum.moneytransfer.model.MoneyTransferConfirmation;
-import io.electrum.moneytransfer.model.MoneyTransferLookupResponse;
 import io.electrum.moneytransfer.model.MoneyTransferRedeemRequest;
 import io.electrum.moneytransfer.model.MoneyTransferRedeemResponse;
 import io.electrum.moneytransfer.model.MoneyTransferReversal;
 import io.electrum.moneytransfer.server.MoneyTransferViolationExceptionMapper;
 import io.electrum.moneytransfer.server.util.RequestKey;
+import io.electrum.moneytransfer.server.util.Status;
 
 public class MoneyTransferTestServer extends ResourceConfig {
 
@@ -41,17 +41,18 @@ public class MoneyTransferTestServer extends ResourceConfig {
          new ConcurrentHashMap<>();
    private static ConcurrentHashMap<RequestKey, MoneyTransferAuthResponse> authResponseRecords =
          new ConcurrentHashMap<>();
-   private static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> confirmationRecords =
+   private static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> authConfirmationRecords =
          new ConcurrentHashMap<>();
-   private static ConcurrentHashMap<RequestKey, MoneyTransferLookupResponse> lookupResponseRecords =
-         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> authReversalRecords = new ConcurrentHashMap<>();
    private static ConcurrentHashMap<RequestKey, MoneyTransferRedeemRequest> redeemRequestRecords =
          new ConcurrentHashMap<>();
    private static ConcurrentHashMap<RequestKey, MoneyTransferRedeemResponse> redeemResponseRecords =
          new ConcurrentHashMap<>();
-   private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> reversalRecords = new ConcurrentHashMap<>();
-   private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> reversalResponseRecords =
+   private static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> redeemConfirmationRecords =
          new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> redeemReversalRecords =
+         new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<String, Status> idCache = new ConcurrentHashMap<>();
    private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
 
    public MoneyTransferTestServer() {
@@ -65,7 +66,7 @@ public class MoneyTransferTestServer extends ResourceConfig {
                   new DropwizardConfiguredValidator(Validators.newValidatorFactory().getValidator())));
       register(new MoneyTransferViolationExceptionMapper());
 
-      log.debug("Initing new TestServer");
+      log.debug("Initiating new TestServer");
    }
 
    public static ConcurrentHashMap<RequestKey, MoneyTransferAdminMessage> getAdminRecords() {
@@ -80,12 +81,12 @@ public class MoneyTransferTestServer extends ResourceConfig {
       return authResponseRecords;
    }
 
-   public static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> getConfirmationRecords() {
-      return confirmationRecords;
+   public static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> getAuthConfirmationRecords() {
+      return authConfirmationRecords;
    }
 
-   public static ConcurrentHashMap<RequestKey, MoneyTransferLookupResponse> getLookupResponseRecords() {
-      return lookupResponseRecords;
+   public static ConcurrentHashMap<RequestKey, MoneyTransferReversal> getAuthReversalRecords() {
+      return authReversalRecords;
    }
 
    public static ConcurrentHashMap<RequestKey, MoneyTransferRedeemRequest> getRedeemRequestRecords() {
@@ -96,12 +97,16 @@ public class MoneyTransferTestServer extends ResourceConfig {
       return redeemResponseRecords;
    }
 
-   public static ConcurrentHashMap<RequestKey, MoneyTransferReversal> getReversalRecords() {
-      return reversalRecords;
+   public static ConcurrentHashMap<RequestKey, MoneyTransferConfirmation> getRedeemConfirmationRecords() {
+      return redeemConfirmationRecords;
    }
 
-   public static ConcurrentHashMap<RequestKey, MoneyTransferReversal> getReversalResponseRecords() {
-      return reversalResponseRecords;
+   public static ConcurrentHashMap<RequestKey, MoneyTransferReversal> getRedeemReversalRecords() {
+      return redeemReversalRecords;
+   }
+
+   public static ConcurrentHashMap<String, Status> getIdCache() {
+      return idCache;
    }
 
    @Provider

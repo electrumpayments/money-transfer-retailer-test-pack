@@ -1,6 +1,5 @@
 package io.electrum.moneytransfer.factory;
 
-import javax.swing.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 

@@ -1,19 +1,16 @@
 package io.electrum.moneytransfer.handler.order;
 
-import io.electrum.moneytransfer.handler.BaseHandler;
-import io.electrum.moneytransfer.model.ErrorDetail;
-import io.electrum.moneytransfer.model.MoneyTransferReversal;
-import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
-import io.electrum.moneytransfer.server.util.MoneyTransferUtils;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.UUID;
+import io.electrum.moneytransfer.handler.BaseHandler;
+import io.electrum.moneytransfer.model.ErrorDetail;
+import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
+import io.electrum.moneytransfer.model.MoneyTransferReversal;
+import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
+import io.electrum.moneytransfer.server.util.RequestKey;
+import io.electrum.moneytransfer.server.util.Status;
 
 public class ReversePaymentHandler extends BaseHandler {
 
@@ -22,13 +19,36 @@ public class ReversePaymentHandler extends BaseHandler {
    }
 
    public Response handle(MoneyTransferReversal body) {
-      return Response.status(501)
-              .entity(
-                      MoneyTransferUtils.getErrorDetail(
-                              UUID.randomUUID().toString(),
-                              null,
-                              ErrorDetail.ErrorTypeEnum.SYSTEM_ERROR,
-                              "Not implemented yet"))
-              .build();
+      RequestKey requestKey = new RequestKey(username, password, RequestKey.CREATE_ORDER_RESOURCE, body.getRequestId());
+      MoneyTransferAuthRequest authRequest = MoneyTransferTestServer.getAuthRequestRecords().get(requestKey);
+      if (authRequest == null) {
+         return buildErrorDetailResponse(
+               body.getId(),
+               body.getRequestId(),
+               ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
+               "No auth found for the confirmation");
+      }
+
+      if (!checkBasicAuth(authRequest.getReceiver().getId())) {
+         return buildErrorDetailResponse(
+               body.getId(),
+               null,
+               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+               "ReceiverId must match basic auth username");
+      }
+
+      if (MoneyTransferTestServer.getIdCache().get(body.getId()) != null) {
+         return buildErrorDetailResponse(
+               body.getId(),
+               body.getRequestId(),
+               ErrorDetail.ErrorTypeEnum.DUPLICATE_RECORD,
+               "Id already in use");
+      }
+
+      MoneyTransferTestServer.getIdCache().put(body.getId(), Status.ORDER_REVERSED);
+      requestKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, body.getId());
+      MoneyTransferTestServer.getAuthReversalRecords().put(requestKey, body);
+
+      return Response.accepted().entity(body).build();
    }
 }
