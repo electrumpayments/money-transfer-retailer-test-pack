@@ -26,7 +26,7 @@ public class ReversePaymentHandler extends BaseHandler {
                body.getId(),
                body.getRequestId(),
                ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
-               "No auth found for the confirmation");
+               "No auth found for the reversal");
       }
 
       if (!checkBasicAuth(authRequest.getReceiver().getId())) {

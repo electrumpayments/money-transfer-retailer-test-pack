@@ -18,6 +18,14 @@ public class LookupOrderHandler extends BaseHandler {
 
    public Response handle(String orderRedeemRef, String merchantId, String originatorInstId, String receiverId) {
 
+      if (!checkBasicAuth(receiverId)) {
+         return buildErrorDetailResponse(
+                 UUID.randomUUID().toString(),
+                 null,
+                 ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+                 "ReceiverId must match basic auth username");
+      }
+
       return Response.status(501)
             .entity(
                   MoneyTransferUtils.getErrorDetail(
