@@ -8,9 +8,14 @@ import javax.ws.rs.core.UriInfo;
 
 import io.electrum.moneytransfer.handler.BaseHandler;
 import io.electrum.moneytransfer.model.ErrorDetail;
+import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
 import io.electrum.moneytransfer.model.MoneyTransferRedeemRequest;
+import io.electrum.moneytransfer.model.MoneyTransferRedeemResponse;
 import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
 import io.electrum.moneytransfer.server.util.MoneyTransferUtils;
+import io.electrum.moneytransfer.server.util.OrderUtils;
+import io.electrum.moneytransfer.server.util.RequestKey;
+import io.electrum.vas.model.EncryptedPin;
 
 public class RedeemOrderHandler extends BaseHandler {
 
@@ -36,13 +41,89 @@ public class RedeemOrderHandler extends BaseHandler {
                "Id already in use");
       }
 
-      return Response.status(501)
-            .entity(
-                  MoneyTransferUtils.getErrorDetail(
-                        UUID.randomUUID().toString(),
-                        null,
-                        ErrorDetail.ErrorTypeEnum.SYSTEM_ERROR,
-                        "Not implemented yet"))
-            .build();
+      //Get original request
+      RequestKey requestKey =
+            new RequestKey(
+                  username,
+                  password,
+                  RequestKey.CREATE_ORDER_RESOURCE,
+                  OrderUtils.getOrderRedeemRef().get(body.getOrderRedeemRef()));
+      MoneyTransferAuthRequest authRequest = MoneyTransferTestServer.getAuthRequestRecords().get(requestKey);
+      if (authRequest == null) {
+         return buildErrorDetailResponse(
+               body.getId(),
+               null,
+               ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
+               "The orderRedeemRef could be incorrect, original create order could not be found");
+      }
+
+      // Get confirmation for the order
+      requestKey =
+              new RequestKey(
+                      username,
+                      password,
+                      RequestKey.CONFIRM_PAYMENT_RESOURCE,
+                      authRequest.getId());
+      if (MoneyTransferTestServer.getAuthRequestRecords().get(requestKey) == null) {
+         return buildErrorDetailResponse(
+                 body.getId(),
+                 null,
+                 ErrorDetail.ErrorTypeEnum.UNABLE_TO_REDEEM,
+                 "Order has not been confirmed yet");
+      }
+
+      // Check that order has not already been redeemed
+      requestKey =
+              new RequestKey(
+                      username,
+                      password,
+                      RequestKey.CONFIRM_REDEEM_RESOURCE,
+                      body.getId());
+      if (MoneyTransferTestServer.getRedeemConfirmationRecords().get(requestKey) != null) {
+         return buildErrorDetailResponse(
+                 body.getId(),
+                 null,
+                 ErrorDetail.ErrorTypeEnum.ALREADY_REDEEMED,
+                 "Order has already been redeemed, create a new order to redeem");
+      }
+
+      // Redeeming more or less than available to redeem.
+      if (authRequest.getAmount().getAmount() < body.getAmount().getAmount()) {
+         return buildErrorDetailResponse(
+               body.getId(),
+               null,
+               ErrorDetail.ErrorTypeEnum.INVALID_AMOUNT,
+               "Cannot redeem for more than the order has been created for");
+      } else if (authRequest.getAmount().getAmount() > body.getAmount().getAmount()) {
+         return buildErrorDetailResponse(
+               body.getId(),
+               null,
+               ErrorDetail.ErrorTypeEnum.INVALID_AMOUNT,
+               "Cannot redeem for less than the order has been created for");
+      }
+
+      // Authenticate the pin with the create order request
+      if (!authRequest.getPin().getPinBlock().equals(body.getPin().getPinBlock())) {
+         Integer retries = OrderUtils.getAuthRequestPinRetries().get(authRequest.getId());
+         if (retries > 3) {
+            return buildErrorDetailResponse(body.getId(), null, ErrorDetail.ErrorTypeEnum.PIN_RETRIES_EXCEEDED, "PinBlock did not match create orders pinBlock more than 3 times");
+         }
+         OrderUtils.getAuthRequestPinRetries().put(authRequest.getId(), retries + 1);
+         return buildErrorDetailResponse(body.getId(), null, ErrorDetail.ErrorTypeEnum.INCORRECT_PIN, "PinBlock does not match create orders pinBlock");
+      }
+
+      requestKey = new RequestKey(username, password, RequestKey.REDEEM_ORDER_RESOURCE, body.getId());
+      MoneyTransferTestServer.getRedeemRequestRecords().put(requestKey, body);
+      MoneyTransferRedeemResponse redeemResponse = OrderUtils.copyClass(body, MoneyTransferRedeemRequest.class, MoneyTransferRedeemResponse.class);
+      if (redeemResponse == null) {
+         return buildErrorDetailResponse(
+                 ErrorDetail.ErrorTypeEnum.SYSTEM_ERROR,
+                 "RedeemOrderHandler has failed to complete your request");
+      }
+
+      redeemResponse.setAmount(authRequest.getAmount());
+      redeemResponse.setOrderId(authRequest.getId());
+
+      return Response.created(uriInfo.getRequestUri()).entity(redeemResponse).build();
    }
 }

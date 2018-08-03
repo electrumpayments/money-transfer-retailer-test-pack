@@ -3,6 +3,7 @@ package io.electrum.moneytransfer.server.util;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +12,16 @@ import io.electrum.vas.model.ThirdPartyIdentifier;
 
 public class OrderUtils {
    private static final Logger LOGGER = LoggerFactory.getLogger(OrderUtils.class.getPackage().getName());
-   public static ConcurrentHashMap<String, String> orderRedeemRef = new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<String, String> orderRedeemRef = new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<String, Integer> authRequestPinRetries = new ConcurrentHashMap<>();
+
+   public static ConcurrentHashMap<String, Integer> getAuthRequestPinRetries() {
+      return authRequestPinRetries;
+   }
+
+   public static ConcurrentHashMap<String, String> getOrderRedeemRef() {
+      return orderRedeemRef;
+   }
 
    public static <T, S> T copyClass(S source, Class<S> sourceClass, Class<T> destinationClass) {
       try {

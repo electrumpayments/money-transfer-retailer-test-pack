@@ -46,7 +46,7 @@ public class ReversePaymentHandler extends BaseHandler {
       }
 
       MoneyTransferTestServer.getIdCache().put(body.getId(), Status.ORDER_REVERSED);
-      requestKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, body.getId());
+      requestKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, body.getRequestId());
       MoneyTransferTestServer.getAuthReversalRecords().put(requestKey, body);
 
       return Response.accepted().entity(body).build();

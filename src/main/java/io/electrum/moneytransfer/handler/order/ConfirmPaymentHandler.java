@@ -46,7 +46,7 @@ public class ConfirmPaymentHandler extends BaseHandler {
       }
 
       MoneyTransferTestServer.getIdCache().put(body.getId(), Status.ORDER_CONFIRMED);
-      requestKey = new RequestKey(username, password, RequestKey.CONFIRM_PAYMENT_RESOURCE, body.getId());
+      requestKey = new RequestKey(username, password, RequestKey.CONFIRM_PAYMENT_RESOURCE, body.getRequestId());
       MoneyTransferTestServer.getAuthConfirmationRecords().put(requestKey, body);
 
       return Response.accepted().entity(body).build();

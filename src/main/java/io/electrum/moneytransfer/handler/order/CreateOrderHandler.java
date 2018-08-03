@@ -87,7 +87,8 @@ public class CreateOrderHandler extends BaseHandler {
       moneyTransferAuthResponse.getThirdPartyIdentifiers()
             .add(OrderUtils.getRandomThirdPartyIdentifier(request.getSettlementEntity().getId()));
       MoneyTransferTestServer.getAuthResponseRecords().put(key, moneyTransferAuthResponse); // TODO Maybe remove this?
-      OrderUtils.orderRedeemRef.put(moneyTransferAuthResponse.getOrderRedeemRef(), request.getId());
+      OrderUtils.getOrderRedeemRef().put(moneyTransferAuthResponse.getOrderRedeemRef(), request.getId());
+      OrderUtils.getAuthRequestPinRetries().put(request.getId(), 0);
 
       return Response.created(uriInfo.getRequestUri()).entity(moneyTransferAuthResponse).build();
    }
