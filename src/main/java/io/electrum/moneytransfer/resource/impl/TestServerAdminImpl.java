@@ -15,13 +15,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
-import io.electrum.moneytransfer.factory.TestServerAdminHandlerFactory;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.electrum.moneytransfer.api.AdminResource;
+import io.electrum.moneytransfer.factory.TestServerAdminHandlerFactory;
 import io.electrum.moneytransfer.model.ErrorDetail;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;

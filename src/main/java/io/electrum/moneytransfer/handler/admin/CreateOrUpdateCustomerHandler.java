@@ -7,9 +7,8 @@ import javax.ws.rs.core.UriInfo;
 import io.electrum.moneytransfer.handler.BaseHandler;
 import io.electrum.moneytransfer.model.ErrorDetail;
 import io.electrum.moneytransfer.model.MoneyTransferAdminMessage;
-import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
+import io.electrum.moneytransfer.server.backend.records.AdminRecord;
 import io.electrum.moneytransfer.server.util.RandomData;
-import io.electrum.moneytransfer.server.util.RequestKey;
 
 public class CreateOrUpdateCustomerHandler extends BaseHandler {
 
@@ -36,19 +35,15 @@ public class CreateOrUpdateCustomerHandler extends BaseHandler {
          body.setCustomerProfileId(RandomData.random09AZ(10));
       }
 
-      MoneyTransferTestServer.getCustomerIdToIdRecords().put(body.getCustomerProfileId(), body.getCustomerDetails().getIdNumber());
+      AdminRecord adminRecord = moneyTransferDb.getAdminTable().getRecord(body.getCustomerDetails().getIdNumber());
 
-      RequestKey key =
-            new RequestKey(username, password, RequestKey.CUSTOMER_RESOURCE, body.getCustomerDetails().getIdNumber());
-      MoneyTransferAdminMessage cachedBody = MoneyTransferTestServer.getAdminRecords().get(key);
-
-      if (cachedBody == null) {
-         MoneyTransferTestServer.getAdminRecords().put(key, body);
+      if (adminRecord == null) {
+         moneyTransferDb.getAdminTable().putRecord(new AdminRecord(body.getCustomerDetails().getIdNumber(), body));
          return Response.created(uriInfo.getRequestUri()).entity(body).build();
       }
 
-      body.setCustomerProfileId(cachedBody.getCustomerProfileId());
-      MoneyTransferTestServer.getAdminRecords().put(key, body);
+      body.setCustomerProfileId(adminRecord.getAdminMessage().getCustomerProfileId());
+      moneyTransferDb.getAdminTable().putRecord(new AdminRecord(body.getCustomerDetails().getIdNumber(), body));
       return Response.ok(body).build();
    }
 }

@@ -7,9 +7,7 @@ import javax.ws.rs.core.UriInfo;
 import io.electrum.moneytransfer.handler.BaseHandler;
 import io.electrum.moneytransfer.model.ErrorDetail;
 import io.electrum.moneytransfer.model.IdType;
-import io.electrum.moneytransfer.model.MoneyTransferAdminMessage;
-import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
-import io.electrum.moneytransfer.server.util.RequestKey;
+import io.electrum.moneytransfer.server.backend.records.AdminRecord;
 
 public class GetCustomerInfoHandler extends BaseHandler {
 
@@ -31,32 +29,31 @@ public class GetCustomerInfoHandler extends BaseHandler {
                "ReceiverId must match basic auth username");
       }
 
-      RequestKey key = new RequestKey(username, password, RequestKey.CUSTOMER_RESOURCE, idNumber);
-      MoneyTransferAdminMessage moneyTransferAdminMessage = MoneyTransferTestServer.getAdminRecords().get(key);
+      AdminRecord adminRecord = moneyTransferDb.getAdminTable().getRecord(idNumber);
 
-      if (moneyTransferAdminMessage == null) {
+      if (adminRecord == null) {
          return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
       }
 
-      if (idNumber.equals(moneyTransferAdminMessage.getCustomerDetails().getIdNumber())
-            && receiverId.equals(moneyTransferAdminMessage.getReceiver().getId())) {
+      if (idNumber.equals(adminRecord.getAdminMessage().getCustomerDetails().getIdNumber())
+            && receiverId.equals(adminRecord.getAdminMessage().getReceiver().getId())) {
 
-         if (idType != null && !idType.equals(moneyTransferAdminMessage.getCustomerDetails().getIdType())) {
+         if (idType != null && !idType.equals(adminRecord.getAdminMessage().getCustomerDetails().getIdType())) {
             return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
          if (idCountryCode != null
-               && !idCountryCode.equals(moneyTransferAdminMessage.getCustomerDetails().getIdCountryCode())) {
+               && !idCountryCode.equals(adminRecord.getAdminMessage().getCustomerDetails().getIdCountryCode())) {
             return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
          if (merchantId != null
-               && !merchantId.equals(moneyTransferAdminMessage.getOriginator().getMerchant().getMerchantId())) {
+               && !merchantId.equals(adminRecord.getAdminMessage().getOriginator().getMerchant().getMerchantId())) {
             return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
          if (originatorInstId != null
-               && !originatorInstId.equals(moneyTransferAdminMessage.getOriginator().getInstitution().getId())) {
+               && !originatorInstId.equals(adminRecord.getAdminMessage().getOriginator().getInstitution().getId())) {
             return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);
          }
-         return Response.ok(moneyTransferAdminMessage).build();
+         return Response.ok(adminRecord.getAdminMessage()).build();
       }
 
       return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD, null);

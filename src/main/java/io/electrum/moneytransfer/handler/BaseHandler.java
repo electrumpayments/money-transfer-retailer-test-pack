@@ -6,6 +6,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import io.electrum.moneytransfer.server.backend.MoneyTransferBackend;
+import io.electrum.moneytransfer.server.backend.db.MockMoneyTransferDb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,7 @@ public abstract class BaseHandler {
    protected final UriInfo uriInfo;
    protected final String username;
    protected final String password;
+   protected final MockMoneyTransferDb moneyTransferDb;
 
    public BaseHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
       this.httpHeaders = httpHeaders;
@@ -28,6 +31,7 @@ public abstract class BaseHandler {
       String authString = MoneyTransferUtils.getAuthString(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION));
       username = MoneyTransferUtils.getUsernameFromAuth(authString);
       password = MoneyTransferUtils.getPasswordFromAuth(authString);
+      moneyTransferDb = MoneyTransferTestServer.getBackend().getDbForUser(username, password);
    }
 
    protected Response buildErrorDetailResponse(

@@ -6,31 +6,31 @@ import javax.ws.rs.core.UriInfo;
 
 import io.electrum.moneytransfer.handler.BaseHandler;
 import io.electrum.moneytransfer.model.ErrorDetail;
-import io.electrum.moneytransfer.model.MoneyTransferConfirmation;
-import io.electrum.moneytransfer.server.backend.records.RedemptionConfirmationRecord;
-import io.electrum.moneytransfer.server.backend.records.RedemptionRecord;
+import io.electrum.moneytransfer.model.MoneyTransferReversal;
+import io.electrum.moneytransfer.server.backend.records.AuthRecord;
+import io.electrum.moneytransfer.server.backend.records.AuthReversalRecord;
 import io.electrum.moneytransfer.server.backend.records.RequestRecord;
 
-public class ConfirmRedeemHandler extends BaseHandler {
+public class ReverseAuthHandler extends BaseHandler {
 
-   public ConfirmRedeemHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
+   public ReverseAuthHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
       super(httpHeaders, uriInfo);
    }
 
-   public Response handle(MoneyTransferConfirmation body) {
-      RedemptionRecord redemptionRecord = moneyTransferDb.getRedemptionTable().getRecord(body.getRequestId());
-      if (redemptionRecord == null) {
+   public Response handle(MoneyTransferReversal body) {
+      AuthRecord authRecord = moneyTransferDb.getAuthTable().getRecord(body.getRequestId());
+      if (authRecord == null) {
          return buildErrorDetailResponse(
                body.getId(),
                body.getRequestId(),
                ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
-               "No redeem request found for the confirmation");
+               "No auth found for the reversal");
       }
 
-      if (!checkBasicAuth(redemptionRecord.getRedeemRequest().getReceiver().getId())) {
+      if (!checkBasicAuth(authRecord.getAuthRequest().getReceiver().getId())) {
          return buildErrorDetailResponse(
                body.getId(),
-               body.getRequestId(),
+               null,
                ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
                "ReceiverId must match basic auth username");
       }
@@ -43,17 +43,17 @@ public class ConfirmRedeemHandler extends BaseHandler {
                "Id already in use");
       }
 
-      if (redemptionRecord.getState().equals(RequestRecord.State.REVERSED)) {
+      if (authRecord.getState().equals(RequestRecord.State.CONFIRMED)) {
          return buildErrorDetailResponse(
                body.getId(),
                body.getRequestId(),
-               ErrorDetail.ErrorTypeEnum.UNABLE_TO_REDEEM,
-               "Redemption request has been reversed");
+               ErrorDetail.ErrorTypeEnum.DUPLICATE_RECORD,
+               "Unable to reverse a confirmed order");
       }
 
-      redemptionRecord.addConfirmationId(body.getId());
-      redemptionRecord.setState(RequestRecord.State.CONFIRMED);
-      moneyTransferDb.getRedemptionConfirmationTable().putRecord(new RedemptionConfirmationRecord(body.getId(), body));
+      moneyTransferDb.getAuthReversalTable().putRecord(new AuthReversalRecord(body.getId(), body));
+      authRecord.addReversalId(body.getId());
+      authRecord.setState(RequestRecord.State.REVERSED);
 
       return Response.accepted().entity(body).build();
    }

@@ -1,12 +1,11 @@
 package io.electrum.moneytransfer.handler.test.server.admin;
 
-import io.electrum.moneytransfer.handler.BaseHandler;
-import io.electrum.moneytransfer.model.ErrorDetail;
-import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import io.electrum.moneytransfer.handler.BaseHandler;
+import io.electrum.moneytransfer.model.ErrorDetail;
 
 public class ResetHandler extends BaseHandler {
 
@@ -18,11 +17,11 @@ public class ResetHandler extends BaseHandler {
 
       if (!checkBasicAuth(receiverId)) {
          return buildErrorDetailResponse(
-                 ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-                 "ReceiverId must match basic auth username");
+               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+               "ReceiverId must match basic auth username");
       }
 
-      MoneyTransferTestServer.resetMoneyTransferTestServer();
+      moneyTransferDb.reset();
 
       return Response.noContent().build();
    }
