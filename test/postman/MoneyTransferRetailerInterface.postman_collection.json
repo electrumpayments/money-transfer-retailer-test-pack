@@ -1,9 +1,644 @@
 {
 	"info": {
-		"name": "Money Transfer Retailer Interface",
 		"_postman_id": "aeea3262-5a9f-0b0d-bb49-8faee2a0fffc",
+		"name": "Money Transfer Retailer Interface",
 		"description": "The Electrum Money Transfer Retailer Interface describes an interface for money transfers initiated at a retailer.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
-	"item": []
+	"item": [
+		{
+			"name": "Orders",
+			"description": "Folder for moneytransfer",
+			"item": [
+				{
+					"name": "lookupOrder",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{redeemOrderRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{redeemOrderRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "createOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "76cc1a20-e211-4fbe-9037-034d33b36367",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"2018-07-30T11:25:33.362Z\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"string\",\n    \"name\": \"string\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"string\",\n    \"name\": \"string\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"44444444\",\n\t    \"name\": \"MobiTalk\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"string\",\n      \"transactionIdentifier\": \"string\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"string\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"string\",\n    \"lastName\": \"string\",\n    \"address\": {\n      \"addressLine1\": \"string\",\n      \"addressLine2\": \"string\",\n      \"city\": \"string\",\n      \"province\": \"string\",\n      \"country\": \"string\",\n      \"postCode\": \"string\"\n    },\n    \"idNumber\": \"string\",\n    \"idType\": \"NATIONAL_ID\",\n    \"idCountryCode\": \"string\",\n    \"nationality\": \"string\",\n    \"dateOfBirth\": \"string\",\n    \"contactNumber\": \"string\",\n    \"altContactWork\": \"string\",\n    \"altContactHome\": \"string\",\n    \"email\": \"string\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"string\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"string\",\n      \"keyIndex\": 0\n    }\n  },\n  \"customerProfileId\": \"string\",\n  \"newCustomer\": false,\n  \"fee\": {\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmPayment",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"string\",\n  \"requestId\": \"string\",\n  \"time\": \"2018-07-31T07:48:25.723Z\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"string\",\n      \"transactionIdentifier\": \"string\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "reversePayment",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"string\",\n  \"requestId\": \"string\",\n  \"time\": \"2018-08-06T09:01:05.022Z\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"string\",\n      \"transactionIdentifier\": \"string\"\n    }\n  ],\n  \"reversalReason\": \"TIMEOUT\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/reversals",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"reversals"
+							]
+						},
+						"description": "Requests that a money transfer payment be reversed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"description": "The admin related messages, getting a fee quote, getting a customer record and create or update customer record.",
+			"item": [
+				{
+					"name": "createOrUpdateCustomer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7e9ada85-e8a8-4b17-9b9f-3a9a8ad3058e",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"customerProfileId\"] = jsonData.customerProfileId !== null "
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"receiver\": {\n    \"id\": \"{{receiverInstId}}\",\n    \"name\": \"{{receiverInstName}}\"\n  },\n  \"customerDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"customerProfileId\": \"{{customerProfileId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							]
+						},
+						"description": "Request to create a new or update an existing customer profile on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "getCustomerInfo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f81396d0-33cc-4be6-a362-7778f4615704",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"customerProfileId\"] = jsonData.customerProfileId !== null "
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic MjIyMjIyMjI6cGFzc3dvcmQ="
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers?idNumber={{idNumber}}&idType={{idType}}&idCountryCode={{idCountryCode}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "idNumber",
+									"value": "{{idNumber}}"
+								},
+								{
+									"key": "idType",
+									"value": "{{idType}}"
+								},
+								{
+									"key": "idCountryCode",
+									"value": "{{idCountryCode}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Returns information of the customer's profile as registered on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "getFeeQuote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d9aac1a4-3b5d-4198-b672-3f4764f0e3aa",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Is there a fee quote\"] = jsonData.feeQuote !== null ",
+									"",
+									"var fees = jsonData.feeQuote;",
+									"tests[\"Is there a total amount\"] = fees.totalAmount !== null ",
+									"tests[\"Is there a transfer amount\"] = fees.transferAmount !== null ",
+									"tests[\"Is there a fee amount\"] = fees.feeAmount !== null "
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/fees?amount={{amount}}&amountIncludesFee={{amountIncludesFee}}&idNumber={{idNumber}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"fees"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "{{amount}}"
+								},
+								{
+									"key": "amountIncludesFee",
+									"value": "{{amountIncludesFee}}"
+								},
+								{
+									"key": "idNumber",
+									"value": "{{idNumber}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Returns the fee that will be charged to the customer for the transfer."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Redemptions",
+			"description": "",
+			"item": [
+				{
+					"name": "redeemOrder",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"string\",\n  \"time\": \"2018-08-01T19:46:51.518Z\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"string\",\n    \"name\": \"string\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"string\",\n    \"name\": \"string\"\n  },\n    \"receiver\": {\n        \"id\": \"44444444\",\n        \"name\": \"MobiTalk\"\n    },\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"string\",\n      \"transactionIdentifier\": \"string\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"string\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 0,\n    \"currency\": \"string\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"string\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"string\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"string\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmRedeem",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"string\",\n  \"requestId\": \"string\",\n  \"time\": \"2018-07-31T07:48:16.056Z\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"string\",\n      \"transactionIdentifier\": \"string\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer order has been successfully redeemed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "reverseRedeem",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{receiverInstId}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "passwordA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"string\",\n  \"requestId\": \"string\",\n  \"time\": \"2018-08-01T19:48:44.432Z\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"string\",\n      \"transactionIdentifier\": \"string\"\n    }\n  ],\n  \"reversalReason\": \"TIMEOUT\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions/reversals",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions",
+								"reversals"
+							]
+						},
+						"description": "Requests that a money transfer redemption be reversed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider."
+					},
+					"response": []
+				}
+			]
+		}
+	]
 }

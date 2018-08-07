@@ -1,19 +1,26 @@
 package io.electrum.moneytransfer.server.util;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
 import org.glassfish.jersey.internal.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.electrum.moneytransfer.model.ErrorDetail;
 import io.electrum.moneytransfer.model.PersonalDetails;
+import io.electrum.vas.JsonUtil;
 import io.electrum.vas.model.Institution;
 import io.electrum.vas.model.LedgerAmount;
 import io.electrum.vas.model.Merchant;
 import io.electrum.vas.model.MerchantName;
 import io.electrum.vas.model.Originator;
+import io.electrum.vas.model.ThirdPartyIdentifier;
 
 public class MoneyTransferUtils {
+
+   private static final Logger LOGGER = LoggerFactory.getLogger(MoneyTransferUtils.class.getPackage().getName());
 
    private static final HashMap<ErrorDetail.ErrorTypeEnum, ErrorMessages> ERROR_MESSAGES_MAP =
          new HashMap<ErrorDetail.ErrorTypeEnum, ErrorMessages>();
@@ -93,6 +100,24 @@ public class MoneyTransferUtils {
          this.providerErrorCode = providerErrorCode;
          this.providerErrorMessage = providerErrorMessage;
       }
+   }
+
+   public static <T, S> T copyClass(S source, Class<S> sourceClass, Class<T> destinationClass) {
+      try {
+         return JsonUtil.deserialize(JsonUtil.serialize(source, sourceClass), destinationClass);
+      } catch (IOException e) {
+         LOGGER.error(
+               "Message not able to transformed from " + sourceClass.getName() + " to " + destinationClass.getName());
+         LOGGER.error(e.getMessage());
+         return null;
+      }
+   }
+
+   public static ThirdPartyIdentifier getRandomThirdPartyIdentifier(String id) {
+      ThirdPartyIdentifier thirdPartyIdentifier = new ThirdPartyIdentifier();
+      thirdPartyIdentifier.setInstitutionId(id);
+      thirdPartyIdentifier.setTransactionIdentifier(RandomData.random09AZ(20));
+      return thirdPartyIdentifier;
    }
 
    public static String getAuthString(String authHeader) {

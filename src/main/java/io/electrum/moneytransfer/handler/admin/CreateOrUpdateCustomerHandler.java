@@ -36,6 +36,8 @@ public class CreateOrUpdateCustomerHandler extends BaseHandler {
          body.setCustomerProfileId(RandomData.random09AZ(10));
       }
 
+      MoneyTransferTestServer.getCustomerIdToIdRecords().put(body.getCustomerProfileId(), body.getCustomerDetails().getIdNumber());
+
       RequestKey key =
             new RequestKey(username, password, RequestKey.CUSTOMER_RESOURCE, body.getCustomerDetails().getIdNumber());
       MoneyTransferAdminMessage cachedBody = MoneyTransferTestServer.getAdminRecords().get(key);

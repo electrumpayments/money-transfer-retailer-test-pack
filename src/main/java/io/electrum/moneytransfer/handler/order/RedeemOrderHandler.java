@@ -10,7 +10,7 @@ import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
 import io.electrum.moneytransfer.model.MoneyTransferRedeemRequest;
 import io.electrum.moneytransfer.model.MoneyTransferRedeemResponse;
 import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
-import io.electrum.moneytransfer.server.util.OrderUtils;
+import io.electrum.moneytransfer.server.util.MoneyTransferUtils;
 import io.electrum.moneytransfer.server.util.RequestKey;
 import io.electrum.moneytransfer.server.util.Status;
 
@@ -44,7 +44,7 @@ public class RedeemOrderHandler extends BaseHandler {
                   username,
                   password,
                   RequestKey.CREATE_ORDER_RESOURCE,
-                  OrderUtils.getOrderRedeemRef().get(body.getOrderRedeemRef()));
+                  MoneyTransferTestServer.getOrderRedeemRef().get(body.getOrderRedeemRef()));
       MoneyTransferAuthRequest authRequest = MoneyTransferTestServer.getAuthRequestRecords().get(requestKey);
       if (authRequest == null) {
          return buildErrorDetailResponse(
@@ -56,7 +56,7 @@ public class RedeemOrderHandler extends BaseHandler {
 
       // Get confirmation for the order
       requestKey = new RequestKey(username, password, RequestKey.CONFIRM_PAYMENT_RESOURCE, authRequest.getId());
-      if (MoneyTransferTestServer.getAuthRequestRecords().get(requestKey) == null) {
+      if (MoneyTransferTestServer.getAuthConfirmationRecords().get(requestKey) == null) {
          return buildErrorDetailResponse(
                body.getId(),
                null,
@@ -93,7 +93,7 @@ public class RedeemOrderHandler extends BaseHandler {
 
       // Authenticate the pin with the create order request
       if (!authRequest.getPin().getPinBlock().equals(body.getPin().getPinBlock())) {
-         Integer retries = OrderUtils.getAuthRequestPinRetries().get(authRequest.getId());
+         Integer retries = MoneyTransferTestServer.getAuthRequestPinRetries().get(authRequest.getId());
          if (retries > 3) {
             return buildErrorDetailResponse(
                   body.getId(),
@@ -101,7 +101,7 @@ public class RedeemOrderHandler extends BaseHandler {
                   ErrorDetail.ErrorTypeEnum.PIN_RETRIES_EXCEEDED,
                   "PinBlock did not match create orders pinBlock more than 3 times");
          }
-         OrderUtils.getAuthRequestPinRetries().put(authRequest.getId(), retries + 1);
+         MoneyTransferTestServer.getAuthRequestPinRetries().put(authRequest.getId(), retries + 1);
          return buildErrorDetailResponse(
                body.getId(),
                null,
@@ -112,7 +112,7 @@ public class RedeemOrderHandler extends BaseHandler {
       requestKey = new RequestKey(username, password, RequestKey.REDEEM_ORDER_RESOURCE, body.getId());
       MoneyTransferTestServer.getRedeemRequestRecords().put(requestKey, body);
       MoneyTransferRedeemResponse redeemResponse =
-            OrderUtils.copyClass(body, MoneyTransferRedeemRequest.class, MoneyTransferRedeemResponse.class);
+            MoneyTransferUtils.copyClass(body, MoneyTransferRedeemRequest.class, MoneyTransferRedeemResponse.class);
       if (redeemResponse == null) {
          return buildErrorDetailResponse(
                ErrorDetail.ErrorTypeEnum.SYSTEM_ERROR,
@@ -122,10 +122,11 @@ public class RedeemOrderHandler extends BaseHandler {
       redeemResponse.setAmount(authRequest.getAmount());
       redeemResponse.setOrderId(authRequest.getId());
       redeemResponse.getThirdPartyIdentifiers()
-            .add(OrderUtils.getRandomThirdPartyIdentifier(body.getReceiver().getId()));
+            .add(MoneyTransferUtils.getRandomThirdPartyIdentifier(body.getReceiver().getId()));
 
       requestKey = new RequestKey(username, password, RequestKey.REDEEM_ORDER_RESOURCE, body.getId());
       MoneyTransferTestServer.getRedeemResponseRecords().put(requestKey, redeemResponse);
+      MoneyTransferTestServer.getOrderRedeemRef().put(body.getOrderRedeemRef(), body.getId());
 
       return Response.created(uriInfo.getRequestUri()).entity(redeemResponse).build();
    }

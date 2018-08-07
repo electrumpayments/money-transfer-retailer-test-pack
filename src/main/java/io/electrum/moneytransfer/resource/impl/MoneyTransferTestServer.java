@@ -37,6 +37,7 @@ import io.electrum.moneytransfer.server.util.Status;
 public class MoneyTransferTestServer extends ResourceConfig {
 
    private static ConcurrentHashMap<RequestKey, MoneyTransferAdminMessage> adminRecords = new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<String, String> customerIdToIdRecords = new ConcurrentHashMap<>();
    private static ConcurrentHashMap<RequestKey, MoneyTransferAuthRequest> authRequestRecords =
          new ConcurrentHashMap<>();
    private static ConcurrentHashMap<RequestKey, MoneyTransferAuthResponse> authResponseRecords =
@@ -53,6 +54,9 @@ public class MoneyTransferTestServer extends ResourceConfig {
    private static ConcurrentHashMap<RequestKey, MoneyTransferReversal> redeemReversalRecords =
          new ConcurrentHashMap<>();
    private static ConcurrentHashMap<String, Status> idCache = new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<String, String> orderRedeemRef = new ConcurrentHashMap<>();
+   private static ConcurrentHashMap<String, Integer> authRequestPinRetries = new ConcurrentHashMap<>();
+
    private static final Logger log = LoggerFactory.getLogger(MoneyTransferTestServer.class.getPackage().getName());
 
    public MoneyTransferTestServer() {
@@ -67,6 +71,24 @@ public class MoneyTransferTestServer extends ResourceConfig {
       register(new MoneyTransferViolationExceptionMapper());
 
       log.debug("Initiating new TestServer");
+   }
+
+   public static void resetMoneyTransferTestServer() {
+      adminRecords = new ConcurrentHashMap<>();
+      customerIdToIdRecords = new ConcurrentHashMap<>();
+      authRequestRecords = new ConcurrentHashMap<>();
+      authConfirmationRecords = new ConcurrentHashMap<>();
+      authReversalRecords = new ConcurrentHashMap<>();
+      redeemRequestRecords = new ConcurrentHashMap<>();
+      redeemConfirmationRecords = new ConcurrentHashMap<>();
+      redeemReversalRecords = new ConcurrentHashMap<>();
+      idCache = new ConcurrentHashMap<>();
+      orderRedeemRef = new ConcurrentHashMap<>();
+      authRequestPinRetries = new ConcurrentHashMap<>();
+   }
+
+   public static ConcurrentHashMap<String, String> getCustomerIdToIdRecords() {
+      return customerIdToIdRecords;
    }
 
    public static ConcurrentHashMap<RequestKey, MoneyTransferAdminMessage> getAdminRecords() {
@@ -107,6 +129,14 @@ public class MoneyTransferTestServer extends ResourceConfig {
 
    public static ConcurrentHashMap<String, Status> getIdCache() {
       return idCache;
+   }
+
+   public static ConcurrentHashMap<String, Integer> getAuthRequestPinRetries() {
+      return authRequestPinRetries;
+   }
+
+   public static ConcurrentHashMap<String, String> getOrderRedeemRef() {
+      return orderRedeemRef;
    }
 
    @Provider
