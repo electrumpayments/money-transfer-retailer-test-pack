@@ -32,7 +32,7 @@ public class ConfirmRedeemHandler extends BaseHandler {
       if (!checkBasicAuth(redeemRequest.getReceiver().getId())) {
          return buildErrorDetailResponse(
                body.getId(),
-               null,
+               body.getRequestId(),
                ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
                "ReceiverId must match basic auth username");
       }

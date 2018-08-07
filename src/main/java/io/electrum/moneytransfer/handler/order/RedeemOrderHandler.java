@@ -51,7 +51,7 @@ public class RedeemOrderHandler extends BaseHandler {
                body.getId(),
                null,
                ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
-               "The orderRedeemRef could be incorrect, original create order could not be found");
+               "The orderRedeemRef could be incorrect, original create order could not be found.");
       }
 
       // Get confirmation for the order
@@ -94,7 +94,7 @@ public class RedeemOrderHandler extends BaseHandler {
       // Authenticate the pin with the create order request
       if (!authRequest.getPin().getPinBlock().equals(body.getPin().getPinBlock())) {
          Integer retries = MoneyTransferTestServer.getAuthRequestPinRetries().get(authRequest.getId());
-         if (retries > 3) {
+         if (retries >= 3) {
             return buildErrorDetailResponse(
                   body.getId(),
                   null,

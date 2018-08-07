@@ -45,6 +45,15 @@ public class ConfirmPaymentHandler extends BaseHandler {
                "Id already in use");
       }
 
+      requestKey = new RequestKey(username, password, RequestKey.REVERSE_PAYMENT_RESOURCE, body.getRequestId());
+      if (MoneyTransferTestServer.getAuthReversalRecords().get(requestKey) != null) {
+         return buildErrorDetailResponse(
+               body.getId(),
+               body.getRequestId(),
+               ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
+               "Create order request has already been reversed and cannot be confirmed");
+      }
+
       MoneyTransferTestServer.getIdCache().put(body.getId(), Status.ORDER_CONFIRMED);
       requestKey = new RequestKey(username, password, RequestKey.CONFIRM_PAYMENT_RESOURCE, body.getRequestId());
       MoneyTransferTestServer.getAuthConfirmationRecords().put(requestKey, body);
