@@ -10,12 +10,10 @@ import io.electrum.moneytransfer.model.ErrorDetail.ErrorTypeEnum;
 import io.electrum.moneytransfer.model.MoneyTransferAdminMessage;
 import io.electrum.moneytransfer.model.MoneyTransferAuthRequest;
 import io.electrum.moneytransfer.model.MoneyTransferAuthResponse;
-import io.electrum.moneytransfer.resource.impl.MoneyTransferTestServer;
 import io.electrum.moneytransfer.server.backend.records.AdminRecord;
 import io.electrum.moneytransfer.server.backend.records.AuthRecord;
 import io.electrum.moneytransfer.server.util.MoneyTransferUtils;
 import io.electrum.moneytransfer.server.util.RandomData;
-import io.electrum.moneytransfer.server.util.RequestKey;
 
 public class AuthHandler extends BaseHandler {
 
@@ -69,16 +67,18 @@ public class AuthHandler extends BaseHandler {
          moneyTransferDb.getAdminTable()
                .putRecord(new AdminRecord(request.getSenderDetails().getIdNumber(), moneyTransferAdminMessage));
       } else {
-         MoneyTransferAdminMessage cachedAdminRecord =
-               moneyTransferDb.getAdminTable().getRecord(request.getSenderDetails().getIdNumber()).getAdminMessage();
+         if (request.getCustomerProfileId() != null) {
+            AdminRecord cachedAdminRecord =
+                  moneyTransferDb.getAdminTable().getAdminRecordWithCustomerProfileId(request.getCustomerProfileId());
 
-         if (request.getCustomerProfileId() != null
-               && cachedAdminRecord.getCustomerProfileId() != request.getCustomerProfileId()) {
-            return buildErrorDetailResponse(
-                  request.getId(),
-                  null,
-                  ErrorTypeEnum.CUSTOMER_CHECK_FAILED,
-                  "CustomerProfileId does not match stored sending customer CustomerProfileId");
+            if (!cachedAdminRecord.getAdminMessage().getCustomerDetails().getIdNumber().equals(
+                  request.getSenderDetails().getIdNumber())) {
+               return buildErrorDetailResponse(
+                     request.getId(),
+                     null,
+                     ErrorTypeEnum.CUSTOMER_CHECK_FAILED,
+                     "CustomerProfileId does not match stored sending customer CustomerProfileId");
+            }
          }
       }
 

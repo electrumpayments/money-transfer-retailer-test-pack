@@ -41,11 +41,8 @@ Messages will be validated for correctness against the service interface and in 
   "errorMessage": "Bad formatting",
   "detailMessage": {
     "formatErrors": [
-      {
-        "field": "product",
-        "msg": "may not be null",
-        "value": "null"
-      }
+      "receiverId cannot be null",
+      "originator.merchantName cannot be null"
     ]
   }
 }
