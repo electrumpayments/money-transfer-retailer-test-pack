@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.electrum</groupId>
   <artifactId>money-transfer-retailer-test-pack</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
   <name>Money Transfer Retailer</name>
-  <description>Server and Postman scripts to test Money Transfer Retailer Interface implementaitons</description>
+  <description>Server and Postman scripts to test Money Transfer Retailer Interface implementations</description>
   <url>https://electrumpayments.github.io/money-transfer-retailer-test-pack</url>
   <licenses>
     <license>
@@ -31,7 +31,7 @@
   </scm>
 
   <properties>
-    <money-transfer-retailer-version>2.0.1</money-transfer-retailer-version>
+    <money-transfer-retailer-version>2.0.2</money-transfer-retailer-version>
     <service-interface-base-version>3.10.0</service-interface-base-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <joda-time-version>2.9.9</joda-time-version>
