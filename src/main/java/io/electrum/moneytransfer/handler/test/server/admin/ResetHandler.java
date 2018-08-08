@@ -13,12 +13,12 @@ public class ResetHandler extends BaseHandler {
       super(httpHeaders, uriInfo);
    }
 
-   public Response handle(String receiverId) {
+   public Response handle(String clientId) {
 
-      if (!checkBasicAuth(receiverId)) {
+      if (!checkBasicAuth(clientId)) {
          return buildErrorDetailResponse(
                ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
+               "ClientId must match basic auth username");
       }
 
       moneyTransferDb.reset();

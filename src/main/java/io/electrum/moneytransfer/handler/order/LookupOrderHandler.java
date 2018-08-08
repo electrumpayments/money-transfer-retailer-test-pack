@@ -1,7 +1,5 @@
 package io.electrum.moneytransfer.handler.order;
 
-import java.util.UUID;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -11,6 +9,7 @@ import io.electrum.moneytransfer.model.ErrorDetail;
 import io.electrum.moneytransfer.model.MoneyTransferLookupResponse;
 import io.electrum.moneytransfer.server.backend.records.AuthRecord;
 import io.electrum.moneytransfer.server.backend.records.RedemptionRecord;
+import io.electrum.vas.model.Originator;
 
 public class LookupOrderHandler extends BaseHandler {
 
@@ -19,14 +18,6 @@ public class LookupOrderHandler extends BaseHandler {
    }
 
    public Response handle(String orderRedeemRef, String merchantId, String originatorInstId, String receiverId) {
-
-      if (!checkBasicAuth(receiverId)) {
-         return buildErrorDetailResponse(
-               UUID.randomUUID().toString(),
-               null,
-               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
-      }
 
       RedemptionRecord redemptionRecord =
             moneyTransferDb.getRedemptionTable().getRedemptionRecordWithOrderRedeemRef(orderRedeemRef);

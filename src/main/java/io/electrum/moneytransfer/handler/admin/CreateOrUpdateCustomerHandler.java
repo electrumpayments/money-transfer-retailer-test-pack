@@ -17,32 +17,25 @@ public class CreateOrUpdateCustomerHandler extends BaseHandler {
    }
 
    public Response handle(MoneyTransferAdminMessage body) {
-
-      if (!checkBasicAuth(body.getReceiver().getId())) {
-         return buildErrorDetailResponse(
-               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
-      }
-
-      // Add some error testing if a ID ends in 5 with will give an error.
-      if (body.getCustomerDetails().getIdNumber().endsWith("5")) {
-         return buildErrorDetailResponse(
-               ErrorDetail.ErrorTypeEnum.CUSTOMER_CHECK_FAILED,
-               "Invalid Id number (Sample error if id ends in 5)");
-      }
-
-      if (body.getCustomerProfileId() == null) {
-         body.setCustomerProfileId(RandomData.random09AZ(10));
+      if (!wasDatabasePresentBeforeRequest() && body.getCustomerProfileId() != null) {
+         buildErrorDetailResponse(
+                 ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+                 "The no customerProfileId exists with current basic auth credentials");
       }
 
       AdminRecord adminRecord = moneyTransferDb.getAdminTable().getRecord(body.getCustomerDetails().getIdNumber());
-
       if (adminRecord == null) {
+         body.setCustomerProfileId(RandomData.random09AZ(10));
          moneyTransferDb.getAdminTable().putRecord(new AdminRecord(body.getCustomerDetails().getIdNumber(), body));
          return Response.created(uriInfo.getRequestUri()).entity(body).build();
       }
 
-      body.setCustomerProfileId(adminRecord.getAdminMessage().getCustomerProfileId());
+      if (body.getCustomerProfileId() == null
+            || !body.getCustomerProfileId().equals(adminRecord.getAdminMessage().getCustomerProfileId())) {
+         return buildErrorDetailResponse(
+               ErrorDetail.ErrorTypeEnum.CUSTOMER_CHECK_FAILED,
+               "When updating a customer the customerProfileId must be the same as the original customerProfileId");
+      }
       moneyTransferDb.getAdminTable().putRecord(new AdminRecord(body.getCustomerDetails().getIdNumber(), body));
       return Response.ok(body).build();
    }

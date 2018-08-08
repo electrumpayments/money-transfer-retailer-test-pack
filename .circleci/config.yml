@@ -146,7 +146,7 @@ jobs:
     machine:
         enabled: true
     environment:
-      HEROKU_APP: money-transfer-service-test-pack
+      HEROKU_APP: money-transfer-test-pack
     steps:
       - checkout
       - restore_cache:

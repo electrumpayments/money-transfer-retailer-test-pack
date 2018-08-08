@@ -2,6 +2,7 @@ package io.electrum.moneytransfer.handler;
 
 import java.util.UUID;
 
+import javax.lang.model.type.ErrorType;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -23,6 +24,7 @@ public abstract class BaseHandler {
    protected final UriInfo uriInfo;
    protected final String username;
    protected final String password;
+   private final boolean databasePresentBeforeRequest;
    protected final MockMoneyTransferDb moneyTransferDb;
 
    public BaseHandler(HttpHeaders httpHeaders, UriInfo uriInfo) {
@@ -31,6 +33,7 @@ public abstract class BaseHandler {
       String authString = MoneyTransferUtils.getAuthString(httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION));
       username = MoneyTransferUtils.getUsernameFromAuth(authString);
       password = MoneyTransferUtils.getPasswordFromAuth(authString);
+      databasePresentBeforeRequest = MoneyTransferTestServer.getBackend().doesDbForUserExist(username, password);
       moneyTransferDb = MoneyTransferTestServer.getBackend().getDbForUser(username, password);
    }
 
@@ -39,7 +42,7 @@ public abstract class BaseHandler {
          String originalId,
          ErrorDetail.ErrorTypeEnum errorType,
          Object detailedMessage) {
-      return Response.status(400)
+      return Response.status(Response.Status.BAD_REQUEST)
             .entity(MoneyTransferUtils.getErrorDetail(id, originalId, errorType, detailedMessage))
             .build();
    }
@@ -48,8 +51,12 @@ public abstract class BaseHandler {
       return buildErrorDetailResponse(UUID.randomUUID().toString(), null, errorType, detailedMessage);
    }
 
-   protected boolean checkBasicAuth(String receiverId) {
-      return receiverId != null && username != null && username.equals(receiverId);
+   protected boolean checkBasicAuth(String clientId) {
+      return clientId != null && username != null && username.equals(clientId);
+   }
+
+   protected boolean wasDatabasePresentBeforeRequest() {
+      return databasePresentBeforeRequest;
    }
 
 }

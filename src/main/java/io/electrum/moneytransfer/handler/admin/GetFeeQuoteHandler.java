@@ -29,14 +29,8 @@ public class GetFeeQuoteHandler extends BaseHandler {
          String senderCell,
          String recipientCell) {
 
-      if (!checkBasicAuth(receiverId)) {
-         return buildErrorDetailResponse(
-               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
-      }
-
-      if (amount < 0) {
-         return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.INVALID_AMOUNT, null);
+      if (amount <= 0) {
+         return buildErrorDetailResponse(ErrorDetail.ErrorTypeEnum.INVALID_AMOUNT, "Amount must be positive");
       }
 
       return Response

@@ -23,12 +23,12 @@ public class AuthHandler extends BaseHandler {
 
    public Response handle(MoneyTransferAuthRequest request) {
 
-      if (!checkBasicAuth(request.getReceiver().getId())) {
+      if (!checkBasicAuth(request.getClient().getId())) {
          return buildErrorDetailResponse(
                request.getId(),
                null,
                ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
+               "ClientId must match basic auth username");
       }
 
       if (moneyTransferDb.doesUuidExist(request.getId())) {

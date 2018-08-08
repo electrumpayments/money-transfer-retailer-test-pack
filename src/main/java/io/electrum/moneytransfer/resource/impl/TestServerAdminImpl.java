@@ -1,5 +1,7 @@
 package io.electrum.moneytransfer.resource.impl;
 
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import io.electrum.moneytransfer.factory.TestServerAdminHandlerFactory;
 import io.electrum.moneytransfer.model.ErrorDetail;
+import io.electrum.moneytransfer.server.util.MoneyTransferUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -57,15 +60,17 @@ public class TestServerAdminImpl {
          @ApiResponse(code = 400, message = "Bad Request", response = ErrorDetail.class),
          @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDetail.class) })
    public void reset(
-         @ApiParam(value = "Identifies the service provider to whom this request must be directed.", required = true) @QueryParam("receiverId") @NotNull String receiverId,
+         @ApiParam(value = "Identifies the service provider to whom this request must be directed.", required = true) @QueryParam("clientId") @NotNull String clientId,
          @Context SecurityContext securityContext,
          @Suspended AsyncResponse asyncResponse,
          @Context HttpHeaders httpHeaders,
          @Context UriInfo uriInfo,
          @Context HttpServletRequest httpServletRequest) {
       LOGGER.info(String.format("%s %s", httpServletRequest.getMethod(), uriInfo.getPath()));
-      LOGGER.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), receiverId));
-      Response rsp = TestServerAdminHandlerFactory.getResetHandler(httpHeaders, uriInfo).handle(receiverId);
+      LOGGER.debug(String.format("%s %s\n%s", httpServletRequest.getMethod(), uriInfo.getPath(), clientId));
+
+      Response rsp = TestServerAdminHandlerFactory.getResetHandler(httpHeaders, uriInfo).handle(clientId);
+
       LOGGER.debug(String.format("Response code returned:\n%s", rsp.getStatus()));
       asyncResponse.resume(rsp);
    }

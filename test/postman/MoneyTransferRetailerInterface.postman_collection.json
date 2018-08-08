@@ -65,21 +65,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -129,21 +114,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -201,21 +171,6 @@
 				{
 					"name": "lookupOrder post creation",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -296,21 +251,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -392,21 +332,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -486,21 +411,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -536,21 +446,6 @@
 				{
 					"name": "lookupOrder post redemption confirmation",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -607,26 +502,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -638,8 +518,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -675,21 +555,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -776,21 +641,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -839,21 +689,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -934,21 +769,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -998,21 +818,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -1104,21 +909,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1198,21 +988,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1263,21 +1038,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -1334,26 +1094,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -1365,8 +1110,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -1435,21 +1180,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1528,21 +1258,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1577,21 +1292,6 @@
 				{
 					"name": "lookupOrder",
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -1659,21 +1359,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1731,21 +1416,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1793,26 +1463,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -1824,8 +1479,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -1859,21 +1514,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1906,39 +1546,23 @@
 					"response": []
 				},
 				{
-					"name": "createCustomer fail check",
+					"name": "updateCustomer failed",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "c6eaf66a-28b3-462f-9f2f-621032f9aff6",
+								"id": "9d83d1f7-809a-42e6-b9c1-97efe7254e54",
 								"type": "text/javascript",
 								"exec": [
 									"tests[\"Status code is 400\"] = responseCode.code === 400;",
 									"",
 									"var jsonData = JSON.parse(responseBody);",
-									"",
 									"tests[\"Verify error type\"] = jsonData.errorType === \"CUSTOMER_CHECK_FAILED\"; "
 								]
 							}
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1952,7 +1576,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"receiver\": {\n    \"id\": \"{{receiverInstId}}\",\n    \"name\": \"{{receiverInstName}}\"\n  },\n  \"customerDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber4}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"customerProfileId\": \"{{customerProfileId}}\"\n}"
+							"raw": "{\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"receiver\": {\n    \"id\": \"{{receiverInstId}}\",\n    \"name\": \"{{receiverInstName}}\"\n  },\n  \"customerDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber3}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"customerProfileId\": \"thisIsNotACustomerProfileId\"\n}"
 						},
 						"url": {
 							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers",
@@ -1989,21 +1613,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -2054,21 +1663,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -2147,21 +1741,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -2227,26 +1806,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -2258,8 +1822,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -2328,21 +1892,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -2421,21 +1970,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -2506,21 +2040,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -2591,21 +2110,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -2676,21 +2180,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -2761,21 +2250,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -2822,26 +2296,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -2853,8 +2312,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -2923,21 +2382,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3016,21 +2460,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3101,21 +2530,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3186,21 +2600,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3247,26 +2646,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -3278,8 +2662,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -3348,21 +2732,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3441,21 +2810,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3528,21 +2882,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3589,26 +2928,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -3620,8 +2944,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -3690,21 +3014,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3753,21 +3062,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -3857,21 +3151,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -3921,21 +3200,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -4016,21 +3280,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -4077,26 +3326,11 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "{{receiverInstId}}",
-									"type": "string"
-								},
-								{
-									"key": "password",
-									"value": "passwordA",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {},
 						"url": {
-							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?receiverId={{receiverInstId}}",
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
 							"host": [
 								"{{host}}"
 							],
@@ -4108,8 +3342,8 @@
 							],
 							"query": [
 								{
-									"key": "receiverId",
-									"value": "{{receiverInstId}}"
+									"key": "clientId",
+									"value": "{{clientInstId}}"
 								}
 							]
 						},
@@ -4118,6 +3352,43 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "{{clientInstId}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "passwordA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "5dc596cc-0fe6-4b76-be6c-c061fd986c9c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2b0719e1-d124-4729-a96d-0cc467fbf13a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

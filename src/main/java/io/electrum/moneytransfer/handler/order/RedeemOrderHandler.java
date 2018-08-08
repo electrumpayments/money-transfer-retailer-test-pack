@@ -21,12 +21,12 @@ public class RedeemOrderHandler extends BaseHandler {
 
    public Response handle(MoneyTransferRedeemRequest body) {
 
-      if (!checkBasicAuth(body.getReceiver().getId())) {
+      if (!checkBasicAuth(body.getClient().getId())) {
          return buildErrorDetailResponse(
                body.getId(),
                null,
                ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
+               "ClientId must match basic auth username");
       }
 
       if (moneyTransferDb.doesUuidExist(body.getId())) {

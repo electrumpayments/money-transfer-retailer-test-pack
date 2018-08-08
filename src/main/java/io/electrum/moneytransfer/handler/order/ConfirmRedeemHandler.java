@@ -18,6 +18,14 @@ public class ConfirmRedeemHandler extends BaseHandler {
    }
 
    public Response handle(MoneyTransferConfirmation body) {
+      if (!wasDatabasePresentBeforeRequest()) {
+         buildErrorDetailResponse(
+                 body.getId(),
+                 body.getRequestId(),
+                 ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+                 "The RedeemRequest and Confirmation should be sent with same basic auth credentials");
+      }
+
       RedemptionRecord redemptionRecord = moneyTransferDb.getRedemptionTable().getRecord(body.getRequestId());
       if (redemptionRecord == null) {
          return buildErrorDetailResponse(
@@ -25,14 +33,6 @@ public class ConfirmRedeemHandler extends BaseHandler {
                body.getRequestId(),
                ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
                "No redeem request found for the confirmation");
-      }
-
-      if (!checkBasicAuth(redemptionRecord.getRedeemRequest().getReceiver().getId())) {
-         return buildErrorDetailResponse(
-               body.getId(),
-               body.getRequestId(),
-               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
       }
 
       if (moneyTransferDb.doesUuidExist(body.getId())) {

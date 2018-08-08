@@ -18,6 +18,14 @@ public class ConfirmAuthHandler extends BaseHandler {
    }
 
    public Response handle(MoneyTransferConfirmation body) {
+      if (!wasDatabasePresentBeforeRequest()) {
+         buildErrorDetailResponse(
+               body.getId(),
+               body.getRequestId(),
+               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+               "The AuthRequest and Confirmation should be sent with same basic auth credentials");
+      }
+
       AuthRecord authRecord = moneyTransferDb.getAuthTable().getRecord(body.getRequestId());
       if (authRecord == null) {
          return buildErrorDetailResponse(
@@ -25,14 +33,6 @@ public class ConfirmAuthHandler extends BaseHandler {
                body.getRequestId(),
                ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
                "No auth found for the confirmation");
-      }
-
-      if (!checkBasicAuth(authRecord.getAuthRequest().getReceiver().getId())) {
-         return buildErrorDetailResponse(
-               body.getId(),
-               null,
-               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
       }
 
       if (moneyTransferDb.doesUuidExist(body.getId())) {
@@ -54,10 +54,6 @@ public class ConfirmAuthHandler extends BaseHandler {
       moneyTransferDb.getAuthConfirmationTable().putRecord(new AuthConfirmationRecord(body.getId(), body));
       authRecord.addConfirmationId(body.getId());
       authRecord.setState(RequestRecord.State.CONFIRMED);
-
-      System.out.println("\n\n\n\n");
-      System.out.println(moneyTransferDb.getAuthTable().getRecord(body.getRequestId()).getConfirmationIds().size());
-      System.out.println("\n\n\n\n");
 
       return Response.accepted().entity(body).build();
    }

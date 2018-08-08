@@ -23,12 +23,6 @@ public class GetCustomerInfoHandler extends BaseHandler {
          String originatorInstId,
          String receiverId) {
 
-      if (!checkBasicAuth(receiverId)) {
-         return buildErrorDetailResponse(
-               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
-      }
-
       AdminRecord adminRecord = moneyTransferDb.getAdminTable().getRecord(idNumber);
 
       if (adminRecord == null) {

@@ -18,6 +18,14 @@ public class ReverseRedeemHandler extends BaseHandler {
    }
 
    public Response handle(MoneyTransferReversal body) {
+      if (!wasDatabasePresentBeforeRequest()) {
+         buildErrorDetailResponse(
+                 body.getId(),
+                 body.getRequestId(),
+                 ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
+                 "The RedeemOrder and Reversal should be sent with same basic auth credentials");
+      }
+
       RedemptionRecord redemptionRecord = moneyTransferDb.getRedemptionTable().getRecord(body.getRequestId());
       if (redemptionRecord == null) {
          return buildErrorDetailResponse(
@@ -25,14 +33,6 @@ public class ReverseRedeemHandler extends BaseHandler {
                body.getRequestId(),
                ErrorDetail.ErrorTypeEnum.UNABLE_TO_LOCATE_RECORD,
                "No redeem request found for the reversal");
-      }
-
-      if (!checkBasicAuth(redemptionRecord.getRedeemRequest().getReceiver().getId())) {
-         return buildErrorDetailResponse(
-               body.getId(),
-               body.getRequestId(),
-               ErrorDetail.ErrorTypeEnum.AUTHENTICATION_ERROR,
-               "ReceiverId must match basic auth username");
       }
 
       if (moneyTransferDb.doesUuidExist(body.getId())) {
