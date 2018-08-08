@@ -27,6 +27,18 @@ jobs:
           name: Compile, Test, and Release
           command: /electrum/bin/simpleTestAndReleaseJava.sh
       - run:
+          name: Compile service for the Test server Docker container
+          command: mvn clean install -B -Dstyle.color=always
+      - run:
+          name: Build the Test Server Docker container
+          command: docker build -t=$CIRCLE_PROJECT_REPONAME ./target
+      - run:
+          name: Run the Test Server Service in the Docker Container
+          command: docker run -d -p 8080:8080 --name test-server-container $CIRCLE_PROJECT_REPONAME
+      - run:
+          name: Run postman tests from the collection against the docker test server service
+          command: docker exec test-server-container newman run test/MoneyTransferRetailerInterface.postman_collection.json -e test/localhost.postman_environment.json
+      - run:
           name: Release failed! Revert any release steps that might have been taken
           command: /electrum/bin/revertReleaseJava.sh
           when: on_fail
@@ -51,25 +63,6 @@ jobs:
       - store_artifacts:
           path: release
           destination: release
-  code-coverage-report:
-    docker:
-      - image: 813968012009.dkr.ecr.us-east-1.amazonaws.com/circleci-openjdk8-8u162
-        aws_auth:
-          aws_access_key_id: $AWS_ACCESS_KEY_ID
-          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
-    steps:
-      - checkout
-      - restore_cache:
-          # if you ever need to invalidate the cache, simply bump the version number
-          keys:
-            - v1-maven-{{ .Branch }}-{{ checksum "pom.xml" }}
-            - v1-maven-{{ .Branch }}
-      - run:
-          name: Generate code coverage report
-          command: mvn cobertura:cobertura -B -Dstyle.color=always
-      - store_artifacts:
-          path: target/site/cobertura
-          destination: coverage
   build-with-latest-deps:
     docker:
       - image: 813968012009.dkr.ecr.us-east-1.amazonaws.com/circleci-openjdk8-8u162
@@ -115,33 +108,6 @@ jobs:
       - store_artifacts:
           path: logs
           destination: logs
-  tests-for-test-server:
-    docker:
-      - image: 813968012009.dkr.ecr.us-east-1.amazonaws.com/circleci-openjdk8-8u162
-        aws_auth:
-          aws_access_key_id: $AWS_ACCESS_KEY_ID
-          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
-    steps:
-      - checkout
-      - restore_cache:
-          # if you ever need to invalidate the cache, simply bump the version number
-          keys:
-            - v1-maven-{{ .Branch }}-{{ checksum "pom.xml" }}
-            - v1-maven-{{ .Branch }}
-      - setup_remote_docker:   # (2)
-          docker_layer_caching: true # (3)
-      - run:
-          name: Compile service for the Test server Docker container
-          command: mvn clean install -B -Dstyle.color=always
-      - run:
-          name: Build the Test Server Docker container
-          command: docker build -t=$CIRCLE_PROJECT_REPONAME ./target
-      - run:
-          name: Run the Test Server Service in the Docker Container
-          command: docker run -d -p 8080:8080 --name test-server-container $CIRCLE_PROJECT_REPONAME
-      - run:
-          name: Run postman tests from the collection against the docker test server service
-          command: docker exec test-server-container newman run test/MoneyTransferRetailerInterface.postman_collection.json -e test/localhost.postman_environment.json
   deploy-to-heroku:
     machine:
         enabled: true
@@ -165,16 +131,10 @@ workflows:
     jobs:
       - build-and-release:
           context: java
-      - tests-for-test-server:
-          context: java
-      - code-coverage-report:
-          context: java
-          requires:
-            - build-and-release
       - deploy-to-heroku:
           context: java
           requires:
-            - tests-for-test-server
+            - build-and-release
   nightly:
     jobs:
       - build-with-latest-deps:
