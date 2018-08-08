@@ -13,6 +13,8 @@ jobs:
           keys:
             - v1-maven-{{ .Branch }}-{{ checksum "pom.xml" }}
             - v1-maven-{{ .Branch }}
+      - setup_remote_docker:   # (2)
+          docker_layer_caching: true # (3)
       - run:
           name: Download dependencies
           command: mvn dependency:resolve-plugins dependency:go-offline -B -Dstyle.color=always
@@ -124,7 +126,6 @@ jobs:
           name: Deploy Master to Heroku
           command: |
             git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP.git master
-
 workflows:
   version: 2
   commit:
