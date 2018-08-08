@@ -141,12 +141,12 @@ jobs:
           command: docker run -d -p 8080:8080 --name test-server-container $CIRCLE_PROJECT_REPONAME
       - run:
           name: Run postman tests from the collection against the docker test server service
-          command: docker exec test-server-container newman run test/Airtime.postman_collection.json -e test/localhost.postman_environment.json
+          command: docker exec test-server-container newman run test/postman/MoneyTransferRetailerInterface.postman_collection.json -e test/postman/localhost.postman_environment.json
   deploy-to-heroku:
     machine:
         enabled: true
     environment:
-      HEROKU_APP: airtime-service-test-pack
+      HEROKU_APP: money-transfer-service-test-pack
     steps:
       - checkout
       - restore_cache:
