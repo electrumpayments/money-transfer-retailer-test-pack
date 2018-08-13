@@ -35,6 +35,14 @@ public class AuthHandler extends BaseHandler {
          return buildErrorDetailResponse(request.getId(), null, ErrorTypeEnum.DUPLICATE_RECORD, "Id already in use");
       }
 
+      if (request.getAmount().getAmount() <= 0) {
+         return buildErrorDetailResponse(
+               request.getId(),
+               null,
+               ErrorTypeEnum.INVALID_AMOUNT,
+               "Amount cannot be negative");
+      }
+
       if (request.getAmount().getAmount() > 500000) {
          if (request.getAmount().getAmount() > 1000000) {
             return buildErrorDetailResponse(
