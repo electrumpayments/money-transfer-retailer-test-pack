@@ -1,0 +1,9 @@
+{
+  "errorType": "TRANSACTION_NOT_ALLOWED_FOR_MERCHANT",
+  "errorMessage": "string",
+  "id": "string",
+  "originalId": "string",
+  "detailMessage": {},
+  "providerErrorCode": "string",
+  "providerErrorMessage": "string"
+}

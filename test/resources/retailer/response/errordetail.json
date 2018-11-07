@@ -1,0 +1,9 @@
+{
+  "errorType": "SYSTEM_ERROR",
+  "errorMessage": "Not found",
+  "id": "string",
+  "originalId": "string",
+  "detailMessage": {},
+  "providerErrorCode": "404",
+  "providerErrorMessage": "Not found"
+}

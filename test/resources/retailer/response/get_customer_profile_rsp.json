@@ -1,0 +1,38 @@
+{
+  "originator": {
+    "institution": {
+      "id": "632942",
+      "name": "Massmart"
+    },
+    "terminalId": null,
+    "merchant": {
+      "merchantType" : null,
+      "merchantId" : "123456",
+      "merchantName" : null
+    }
+  },
+  "receiver": {
+    "id": "632946",
+    "name": "Capitec"
+  },
+  "customerDetails": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "address": {
+      "addressLine1": "29 Sir Lowry",
+      "addressLine2": "2nd Floor",
+      "city": "Cape Town",
+      "province": "WC",
+      "country": "RSA",
+      "postCode": "7925"
+    },
+    "idNumber": "1234567890123",
+    "idType": "NATIONAL_ID",
+    "nationality": "RSA",
+    "dateOfBirth": "2000-01-01",
+    "contactNumber": "0123456789",
+    "altContactWork": "9382716450",
+    "altContactHome": "9876543210",
+    "email": "john@doe.com"
+  }
+}

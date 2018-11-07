@@ -1,0 +1,9 @@
+{
+  "errorType": "UNABLE_TO_LOCATE_RECORD",
+  "errorMessage": "Not found",
+  "id": "string",
+  "originalId": "string",
+  "detailMessage": {},
+  "providerErrorCode": "404",
+  "providerErrorMessage": "Not found"
+}

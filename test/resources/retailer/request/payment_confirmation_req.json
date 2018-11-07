@@ -1,0 +1,11 @@
+{
+  "id": "95539f74-a7ab-4768-864e-fba4d8e6905b",
+  "requestId": "7d444840-9dc0-11d1-b245-5ffdce74fad2",
+  "time": "2017-11-13T15:14:09+02:00",
+  "thirdPartyIdentifiers": [
+    {
+      "institutionId": "1234",
+      "transactionIdentifier": "000000851802"
+    }
+  ]
+}

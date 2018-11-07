@@ -1,0 +1,93 @@
+{
+  "id": "7d444840-9dc0-11d1-b245-5ffdce74faaa",
+  "time": "2018-04-13T07:28:49.579Z",
+  "originator": {
+    "institution": {
+      "id": "632942",
+      "name": "Massmart"
+    },
+    "terminalId": "string",
+    "merchant": {
+      "merchantType": "string",
+      "merchantId": "string",
+      "merchantName": {
+        "name": "string",
+        "city": "string",
+        "region": "string",
+        "country": "string"
+      }
+    }
+  },
+  "client": {
+    "id": "11112",
+    "name": "Insta A2"
+  },
+  "settlementEntity": {
+    "id": "string",
+    "name": "string"
+  },
+  "receiver": {
+    "id": "632946",
+    "name": "Capitec"
+  },
+  "thirdPartyIdentifiers": [
+    {
+      "institutionId": "1234",
+      "transactionIdentifier": "000000851802"
+    }
+  ],
+  "slipData": {
+    "messageLines": [
+      {
+        "barcode": {
+          "data": "string",
+          "encoding": "string"
+        },
+        "text": "string",
+        "fontWidthScaleFactor": 0,
+        "fontHeightScaleFactor": 0,
+        "line": false,
+        "cut": false
+      }
+    ],
+    "slipWidth": 0,
+    "issuerReference": "string"
+  },
+  "basketRef": "string12",
+  "tranType": "GOODS_AND_SERVICES",
+  "srcAccType": "DEFAULT",
+  "destAccType": "DEFAULT",
+  "amount": {
+    "amount": 9999990,
+    "currency": "710"
+  },
+  "pin": {
+    "pinBlock": "C09487F52DAA6E10",
+    "encryptionParameters": {
+      "pinBlockFormat": "ISO_9564_FORMAT_0",
+      "accountNumber": "277173737080",
+      "keyIndex": 1
+    }
+  },
+  "recipientDetails": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "idNumber": "12347890456",
+    "idType": "NATIONAL_ID",
+    "nationality": "ZAR",
+    "dateOfBirth": "1993-06-22",
+    "contactNumber": "27717373708",
+    "altContactHome": "27717373707",
+    "altContactWork": "27717373705",
+    "email": "jane@doe.com",
+    "address": {
+      "addressLine1": "29 Sir Lowry Rd",
+      "addressLine2": "Zonnebloem",
+      "city": "Cape Town",
+      "province": "WC",
+      "country": "ZA",
+      "postCode": "7925"
+    }
+  },
+  "orderRedeemRef": "7d444840-9dc0-11d1-b245-5ffdce74fad2"
+}

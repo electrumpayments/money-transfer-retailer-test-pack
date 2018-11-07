@@ -1,0 +1,109 @@
+{
+  "id": "7d444840-9dc0-11d1-b245-5ffdce74fad2",
+  "time": "2017-11-13T15:13:16+02:00",
+  "originator": {
+    "institution": {
+      "id": "1234",
+      "name": "Retailer Inc"
+    },
+    "terminalId": "12345678",
+    "merchant": {
+      "merchantType": "0000",
+      "merchantId": "123456789012345",
+      "merchantName": {
+        "name": "TestMerchant",
+        "city": "Cape Town",
+        "region": "WC",
+        "country": "ZA"
+      }
+    }
+  },
+  "client": {
+    "id": "11112",
+    "name": "Insta A2"
+  },
+  "settlementEntity": {
+    "id": "string",
+    "name": "string"
+  },
+  "receiver": {
+    "id": "1234",
+    "name": "Insta A"
+  },
+  "thirdPartyIdentifiers": [
+    {
+      "institutionId": "1234",
+      "transactionIdentifier": "000000851802"
+    }
+  ],
+  "slipData": {
+    "messageLines": [
+      {
+        "barcode": {
+          "data": "string",
+          "encoding": "string"
+        },
+        "text": "string",
+        "fontWidthScaleFactor": 0,
+        "fontHeightScaleFactor": 0,
+        "line": false,
+        "cut": false
+      }
+    ],
+    "slipWidth": 0,
+    "issuerReference": "string"
+  },
+  "basketRef": "string1111111",
+  "tranType": "GOODS_AND_SERVICES",
+  "srcAccType": "DEFAULT",
+  "destAccType": "DEFAULT",
+  "amount": {
+    "amount": 20000,
+    "currency": "710"
+  },
+  "senderDetails": {
+    "firstName": "Joe",
+    "lastName": "Soap",
+    "idNumber": "12347890123",
+    "idType": "NATIONAL_ID",
+    "nationality": "ZAR",
+    "dateOfBirth": "19880520",
+    "contactNumber": "27607660257",
+    "address": {
+      "addressLine1": "29 Sir Lowry Rd",
+      "addressLine2": "Zonnebloem",
+      "city": "Cape Town",
+      "province": "WC",
+      "country": "ZA",
+      "postCode": "7925"
+    }
+  },
+  "recipientDetails": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "idNumber": "12347890456",
+    "idType": "NATIONAL_ID",
+    "nationality": "ZAR",
+    "dateOfBirth": "1993-06-22",
+    "contactNumber": "27717373708",
+    "altContactHome": "27717373707",
+    "altContactWork": "27717373705",
+    "email": "jane@doe.com",
+    "address": {
+      "addressLine1": "29 Sir Lowry Rd",
+      "addressLine2": "Zonnebloem",
+      "city": "Cape Town",
+      "province": "WC",
+      "country": "ZA",
+      "postCode": "7925"
+    }
+  },
+  "pin": {
+    "pinBlock": "C09487F52DAA6E11",
+    "encryptionParameters": {
+      "pinBlockFormat": "ISO_9564_FORMAT_0",
+      "accountNumber": "277173737080",
+      "keyIndex": 1
+    }
+  }
+}

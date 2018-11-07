@@ -1,0 +1,3394 @@
+{
+	"info": {
+		"_postman_id": "aeea3262-5a9f-0b0d-bb49-8faee2a0fffc",
+		"name": "Money Transfer Retailer Interface",
+		"description": "The Electrum Money Transfer Retailer Interface describes an interface for money transfers initiated at a retailer.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create customer, order and successful redeem",
+			"description": "",
+			"item": [
+				{
+					"name": "createOrderCustomer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bd501c0-c140-49b4-87c6-cebe7b59c3ee",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6066f716-4e92-45a4-9085-300db1a31e38",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"tests[\"Redeem Order Ref\"] = jsonData.orderRedeemRef !== null; ",
+									"tests[\"Order Id is same as Id\"] = jsonData.orderId === jsonData.id;",
+									"postman.setEnvironmentVariable(\"orderRedeemRef\", jsonData.orderRedeemRef);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"44444444\",\n\t    \"name\": \"MobiTalk\"\n\t},\n  \"thirdPartyIdentifiers\": [\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 500,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstNameRep}}\",\n    \"lastName\": \"{{lastNameRep}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1Rep}}\",\n      \"addressLine2\": \"{{addressLine2Rep}}\",\n      \"city\": \"{{cityRep}}\",\n      \"province\": \"{{provinceRep}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCodeRep}}\"\n    },\n    \"idNumber\": \"{{idNumberRep}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirthRep}}\",\n    \"contactNumber\": \"{{contactNumberRep}}\",\n    \"altContactWork\": \"{{altContactWorkRep}}\",\n    \"altContactHome\": \"{{altContactHomeRep}}\",\n    \"email\": \"{{emailRep}}\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"newCustomer\": true,\n  \"fee\": {\n    \"amount\": 20,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "getCustomerInfo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f81396d0-33cc-4be6-a362-7778f4615704",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"customerProfileId\"] = jsonData.customerProfileId !== null "
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic MjIyMjIyMjI6cGFzc3dvcmQ="
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers?idNumber={{idNumber}}&idType={{idType}}&idCountryCode={{idCountryCode}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "idNumber",
+									"value": "{{idNumber}}"
+								},
+								{
+									"key": "idType",
+									"value": "{{idType}}"
+								},
+								{
+									"key": "idCountryCode",
+									"value": "{{idCountryCode}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Returns information of the customer's profile as registered on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder post creation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec4751ab-b567-441f-a22a-b305a2ffca94",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0869a8fb-2f23-469f-839e-c00334897adc",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "213fda02-fce4-466b-a414-6c4f982c357b",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmRedeem",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e6762317-1c02-4734-9433-16fb73cc54d5",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0ff982fe-874f-4cc3-bfe3-82ec962b0d35",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer order has been successfully redeemed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder post redemption confirmation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bc25efec-7140-4a5f-96b9-31f004009679",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Existing customer new order",
+			"description": "",
+			"item": [
+				{
+					"name": "createCustomer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a94af9f-88e0-4ab9-a687-d04e27bc9729",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"customer Profile Id exists\"] = jsonData.customerProfileId !== null; ",
+									"",
+									"postman.setEnvironmentVariable(\"customerProfileId\", jsonData.customerProfileId);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"receiver\": {\n    \"id\": \"{{receiverInstId}}\",\n    \"name\": \"{{receiverInstName}}\"\n  },\n  \"customerDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber2}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"customerProfileId\": \"{{customerProfileId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							]
+						},
+						"description": "Request to create a new or update an existing customer profile on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "createOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bd501c0-c140-49b4-87c6-cebe7b59c3ee",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "bd268918-c76b-4b86-ab09-c9782723b79e",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"tests[\"Redeem Order Ref\"] = jsonData.orderRedeemRef !== null; ",
+									"tests[\"Order Id is same as Id\"] = jsonData.orderId === jsonData.id;",
+									"postman.setEnvironmentVariable(\"orderRedeemRef\", jsonData.orderRedeemRef);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"44444444\",\n\t    \"name\": \"MobiTalk\"\n\t},\n  \"thirdPartyIdentifiers\": [\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 500,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n    \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber2}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstNameRep}}\",\n    \"lastName\": \"{{lastNameRep}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1Rep}}\",\n      \"addressLine2\": \"{{addressLine2Rep}}\",\n      \"city\": \"{{cityRep}}\",\n      \"province\": \"{{provinceRep}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCodeRep}}\"\n    },\n    \"idNumber\": \"{{idNumberRep}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirthRep}}\",\n    \"contactNumber\": \"{{contactNumberRep}}\",\n    \"altContactWork\": \"{{altContactWorkRep}}\",\n    \"altContactHome\": \"{{altContactHomeRep}}\",\n    \"email\": \"{{emailRep}}\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"customerProfileId\": \"{{customerProfileId}}\",\n  \"newCustomer\": false,\n  \"fee\": {\n    \"amount\": 20,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder post creation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "975adf79-2b65-4a33-a0f5-fedbae9c11ff",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify redemption status\"] = jsonData.status === \"UNREDEEMED\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec4751ab-b567-441f-a22a-b305a2ffca94",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0869a8fb-2f23-469f-839e-c00334897adc",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder post order confirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a1cc9822-ad7d-4842-8b46-de08d19b206f",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify redemption status\"] = jsonData.status === \"UNREDEEMED\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "ff8ca1b0-e967-48df-8ea7-90b874d1dbbf",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmRedeem",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e6762317-1c02-4734-9433-16fb73cc54d5",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0ff982fe-874f-4cc3-bfe3-82ec962b0d35",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer order has been successfully redeemed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder post redemption confirmation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "23f621cb-8f9e-4aa5-b237-60588bee89a8",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify redemption status\"] = jsonData.status === \"REDEEMED\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6f063a31-f507-48f5-b95c-94fe5ed8d284",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"description": "Folder for moneytransfer",
+			"item": [
+				{
+					"name": "createOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bd501c0-c140-49b4-87c6-cebe7b59c3ee",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "06533048-9285-4212-bd80-d2d3f4f6eedd",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"tests[\"Redeem Order Ref\"] = jsonData.redeemOrderRef !== null; ",
+									"tests[\"Order Id is same as Id\"] = jsonData.orderId === jsonData.id;",
+									"postman.setEnvironmentVariable(\"orderRedeemRef\", jsonData.orderRedeemRef);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 500,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstNameRep}}\",\n    \"lastName\": \"{{lastNameRep}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1Rep}}\",\n      \"addressLine2\": \"{{addressLine2Rep}}\",\n      \"city\": \"{{cityRep}}\",\n      \"province\": \"{{provinceRep}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCodeRep}}\"\n    },\n    \"idNumber\": \"{{idNumberRep}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirthRep}}\",\n    \"contactNumber\": \"{{contactNumberRep}}\",\n    \"altContactWork\": \"{{altContactWorkRep}}\",\n    \"altContactHome\": \"{{altContactHomeRep}}\",\n    \"email\": \"{{emailRep}}\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },  \n  \"customerProfileId\": \"{{customerId}}\",\n  \"newCustomer\": true,\n  \"fee\": {\n    \"amount\": 20,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmPayment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec4751ab-b567-441f-a22a-b305a2ffca94",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "4954b683-0a54-4849-bc6f-717fbd07bb59",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 0,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmRedeem",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c7c48e7a-1c2c-46ed-849d-b571c8154bde",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer order has been successfully redeemed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f74e13f-39b9-43d7-9427-e85c804be053",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"description": "The admin related messages, getting a fee quote, getting a customer record and create or update customer record.",
+			"item": [
+				{
+					"name": "createCustomer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "63e91380-ecad-4fbd-b07d-2cc31dddd4a7",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Verify customer Profile Id\"] = jsonData.customerProfileId !== null; ",
+									"postman.setEnvironmentVariable(\"customerProfileId\", jsonData.customerProfileId);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"receiver\": {\n    \"id\": \"{{receiverInstId}}\",\n    \"name\": \"{{receiverInstName}}\"\n  },\n  \"customerDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber3}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"customerProfileId\": \"{{customerProfileId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							]
+						},
+						"description": "Request to create a new or update an existing customer profile on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "updateCustomer failed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9d83d1f7-809a-42e6-b9c1-97efe7254e54",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify error type\"] = jsonData.errorType === \"CUSTOMER_CHECK_FAILED\"; "
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"receiver\": {\n    \"id\": \"{{receiverInstId}}\",\n    \"name\": \"{{receiverInstName}}\"\n  },\n  \"customerDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber3}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"customerProfileId\": \"thisIsNotACustomerProfileId\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							]
+						},
+						"description": "Request to create a new or update an existing customer profile on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "updateCustomer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c9eed88d-ce98-4473-84bf-09ca2666a3e6",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Verify customer Profile Id\"] = jsonData.customerProfileId === postman.getEnvironmentVariable(\"customerProfileId\");"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"receiver\": {\n    \"id\": \"{{receiverInstId}}\",\n    \"name\": \"{{receiverInstName}}\"\n  },\n  \"customerDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber3}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"customerProfileId\": \"{{customerProfileId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							]
+						},
+						"description": "Request to create a new or update an existing customer profile on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "getCustomerInfo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f81396d0-33cc-4be6-a362-7778f4615704",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"customerProfileId\"] = jsonData.customerProfileId !== null "
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic MjIyMjIyMjI6cGFzc3dvcmQ="
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/customers?idNumber={{idNumber3}}&idType={{idType}}&idCountryCode={{idCountryCode}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "idNumber",
+									"value": "{{idNumber3}}"
+								},
+								{
+									"key": "idType",
+									"value": "{{idType}}"
+								},
+								{
+									"key": "idCountryCode",
+									"value": "{{idCountryCode}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Returns information of the customer's profile as registered on the service provider's system."
+					},
+					"response": []
+				},
+				{
+					"name": "getFeeQuote",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e2efbc09-edd1-4bf7-b718-fe3ac3c87226",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Is there a fee quote\"] = jsonData.feeQuote !== null;",
+									"",
+									"var fees = jsonData.feeQuote;",
+									"tests[\"Is there a total amount\"] = fees.totalAmount !== null;",
+									"tests[\"Is there a transfer amount\"] = fees.transferAmount !== null;",
+									"tests[\"Is there a fee amount\"] = fees.feeAmount !== null;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/admin/fees?amount={{amount}}&amountIncludesFee={{amountIncludesFee}}&idNumber={{idNumber}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"admin",
+								"fees"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "{{amount}}"
+								},
+								{
+									"key": "amountIncludesFee",
+									"value": "{{amountIncludesFee}}"
+								},
+								{
+									"key": "idNumber",
+									"value": "{{idNumber}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Returns the fee that will be charged to the customer for the transfer."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f74e13f-39b9-43d7-9427-e85c804be053",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pin entry incorrect",
+			"description": "",
+			"item": [
+				{
+					"name": "createOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bd501c0-c140-49b4-87c6-cebe7b59c3ee",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "06533048-9285-4212-bd80-d2d3f4f6eedd",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"tests[\"Redeem Order Ref\"] = jsonData.redeemOrderRef !== null; ",
+									"tests[\"Order Id is same as Id\"] = jsonData.orderId === jsonData.id;",
+									"postman.setEnvironmentVariable(\"orderRedeemRef\", jsonData.orderRedeemRef);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 500,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstNameRep}}\",\n    \"lastName\": \"{{lastNameRep}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1Rep}}\",\n      \"addressLine2\": \"{{addressLine2Rep}}\",\n      \"city\": \"{{cityRep}}\",\n      \"province\": \"{{provinceRep}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCodeRep}}\"\n    },\n    \"idNumber\": \"{{idNumberRep}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirthRep}}\",\n    \"contactNumber\": \"{{contactNumberRep}}\",\n    \"altContactWork\": \"{{altContactWorkRep}}\",\n    \"altContactHome\": \"{{altContactHomeRep}}\",\n    \"email\": \"{{emailRep}}\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },  \n  \"customerProfileId\": \"{{customerId}}\",\n  \"newCustomer\": true,\n  \"fee\": {\n    \"amount\": 20,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmPayment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec4751ab-b567-441f-a22a-b305a2ffca94",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "4954b683-0a54-4849-bc6f-717fbd07bb59",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder attempt 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b8cd25f7-4090-41fb-a9b6-40ff946371fd",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Incorrect PIN status verify\"] = jsonData.errorType === \"INCORRECT_PIN\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin2}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder attempt 2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b8cd25f7-4090-41fb-a9b6-40ff946371fd",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Incorrect PIN status verify\"] = jsonData.errorType === \"INCORRECT_PIN\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin2}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder attempt 3",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b8cd25f7-4090-41fb-a9b6-40ff946371fd",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Incorrect PIN status verify\"] = jsonData.errorType === \"INCORRECT_PIN\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin2}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder attempt 4",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "e2dbb175-6659-46f8-9eaa-f407d8587409",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Incorrect PIN status verify\"] = jsonData.errorType === \"PIN_RETRIES_EXCEEDED\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin2}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f74e13f-39b9-43d7-9427-e85c804be053",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invalid amounts",
+			"description": "",
+			"item": [
+				{
+					"name": "createOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bd501c0-c140-49b4-87c6-cebe7b59c3ee",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "06533048-9285-4212-bd80-d2d3f4f6eedd",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"tests[\"Redeem Order Ref\"] = jsonData.redeemOrderRef !== null; ",
+									"tests[\"Order Id is same as Id\"] = jsonData.orderId === jsonData.id;",
+									"postman.setEnvironmentVariable(\"orderRedeemRef\", jsonData.orderRedeemRef);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 500,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstNameRep}}\",\n    \"lastName\": \"{{lastNameRep}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1Rep}}\",\n      \"addressLine2\": \"{{addressLine2Rep}}\",\n      \"city\": \"{{cityRep}}\",\n      \"province\": \"{{provinceRep}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCodeRep}}\"\n    },\n    \"idNumber\": \"{{idNumberRep}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirthRep}}\",\n    \"contactNumber\": \"{{contactNumberRep}}\",\n    \"altContactWork\": \"{{altContactWorkRep}}\",\n    \"altContactHome\": \"{{altContactHomeRep}}\",\n    \"email\": \"{{emailRep}}\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },  \n  \"customerProfileId\": \"{{customerId}}\",\n  \"newCustomer\": true,\n  \"fee\": {\n    \"amount\": 20,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmPayment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec4751ab-b567-441f-a22a-b305a2ffca94",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "4954b683-0a54-4849-bc6f-717fbd07bb59",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder too much",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "04d9bb87-cf13-4e72-aeb2-be0b2322b480",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify error type\"] = jsonData.errorType === \"INVALID_AMOUNT\";"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0ef51e84-4ed4-435f-8999-d7fc62b115d3",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1001,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "redeemOrder too little",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "fa48455f-d394-4968-95cd-9efcd514a205",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "d43cff26-da4c-4165-aaf4-566103fc5ba1",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify error type\"] = jsonData.errorType === \"INVALID_AMOUNT\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 0,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 999,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },\n  \"orderRedeemRef\": \"{{orderRedeemRef}}\",\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/redemptions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"redemptions"
+							]
+						},
+						"description": "Requests that an existing order be paid out to the recipient. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reverseRedeem` call must be made to the `/orders/redemptions/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f74e13f-39b9-43d7-9427-e85c804be053",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Failed Order reversal",
+			"description": "The could not be reversed due to it been confirmed already",
+			"item": [
+				{
+					"name": "createOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bd501c0-c140-49b4-87c6-cebe7b59c3ee",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "606d4a60-22f7-4778-96f3-1bd355d28775",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"tests[\"Redeem Order Ref\"] = jsonData.orderRedeemRef !== null; ",
+									"tests[\"Order Id is same as Id\"] = jsonData.orderId === jsonData.id;",
+									"postman.setEnvironmentVariable(\"orderRedeemRef\", jsonData.orderRedeemRef);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 500,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstNameRep}}\",\n    \"lastName\": \"{{lastNameRep}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1Rep}}\",\n      \"addressLine2\": \"{{addressLine2Rep}}\",\n      \"city\": \"{{cityRep}}\",\n      \"province\": \"{{provinceRep}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCodeRep}}\"\n    },\n    \"idNumber\": \"{{idNumberRep}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirthRep}}\",\n    \"contactNumber\": \"{{contactNumberRep}}\",\n    \"altContactWork\": \"{{altContactWorkRep}}\",\n    \"altContactHome\": \"{{altContactHomeRep}}\",\n    \"email\": \"{{emailRep}}\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },  \n  \"customerProfileId\": \"{{customerId}}\",\n  \"newCustomer\": true,\n  \"fee\": {\n    \"amount\": 20,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmPayment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec4751ab-b567-441f-a22a-b305a2ffca94",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "4954b683-0a54-4849-bc6f-717fbd07bb59",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "reversePayment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "891c26dd-2be6-4441-b8e4-49e10248b9fd",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "158cb5ea-4a57-48c6-bda5-b24ba5de0190",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Id is consistent\"] = jsonData.id === postman.getEnvironmentVariable(\"uuid\");",
+									"tests[\"Error type\"] = jsonData.errorType === \"DUPLICATE_RECORD\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"reversalReason\": \"TIMEOUT\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/reversals",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"reversals"
+							]
+						},
+						"description": "Requests that a money transfer payment be reversed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f74e13f-39b9-43d7-9427-e85c804be053",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reversed Order",
+			"description": "",
+			"item": [
+				{
+					"name": "createOrder",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bd501c0-c140-49b4-87c6-cebe7b59c3ee",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "06533048-9285-4212-bd80-d2d3f4f6eedd",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"postman.setEnvironmentVariable(\"requestId\", jsonData.id);",
+									"",
+									"tests[\"Redeem Order Ref\"] = jsonData.redeemOrderRef !== null; ",
+									"tests[\"Order Id is same as Id\"] = jsonData.orderId === jsonData.id;",
+									"postman.setEnvironmentVariable(\"orderRedeemRef\", jsonData.orderRedeemRef);",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"time\": \"{{timestamp}}\",\n  \"originator\": {\n    \"institution\": {\n      \"id\": \"{{originatorInstId}}\",\n      \"name\": \"{{originatorInstName}}\"\n    },\n    \"terminalId\": \"{{termId}}\",\n    \"merchant\": {\n      \"merchantType\": \"{{merchantType}}\",\n      \"merchantId\": \"{{merchantId}}\",\n      \"merchantName\": {\n        \"name\": \"{{merchantName}}\",\n        \"city\": \"{{merchantCity}}\",\n        \"region\": \"{{merchantRegion}}\",\n        \"country\": \"{{merchantCountry}}\"\n      }\n    }\n  },\n  \"client\": {\n    \"id\": \"{{clientInstId}}\",\n    \"name\": \"{{clientInstName}}\"\n  },\n  \"settlementEntity\": {\n    \"id\": \"{{settlementEntityInstId}}\",\n    \"name\": \"{{settlementEntityInstName}}\"\n  },\n\t\"receiver\": {\n\t    \"id\": \"{{receiverInstId}}\",\n\t    \"name\": \"{{receiverInstName}}\"\n\t},\n  \"thirdPartyIdentifiers\": [\n  ],\n  \"slipData\": {\n    \"messageLines\": [\n      {\n        \"barcode\": {\n          \"data\": \"string\",\n          \"encoding\": \"string\"\n        },\n        \"text\": \"string\",\n        \"fontWidthScaleFactor\": 0,\n        \"fontHeightScaleFactor\": 0,\n        \"line\": false,\n        \"cut\": false\n      }\n    ],\n    \"slipWidth\": 500,\n    \"issuerReference\": \"{{slipDataIssuerRef}}\"\n  },\n  \"basketRef\": \"string\",\n  \"tranType\": \"GOODS_AND_SERVICES\",\n  \"srcAccType\": \"DEFAULT\",\n  \"destAccType\": \"DEFAULT\",\n  \"amount\": {\n    \"amount\": 1000,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  },\n  \"senderDetails\": {\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1}}\",\n      \"addressLine2\": \"{{addressLine2}}\",\n      \"city\": \"{{city}}\",\n      \"province\": \"{{province}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCode}}\"\n    },\n    \"idNumber\": \"{{idNumber}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirth}}\",\n    \"contactNumber\": \"{{contactNumber}}\",\n    \"altContactWork\": \"{{altContactWork}}\",\n    \"altContactHome\": \"{{altContactHome}}\",\n    \"email\": \"{{email}}\"\n  },\n  \"recipientDetails\": {\n    \"firstName\": \"{{firstNameRep}}\",\n    \"lastName\": \"{{lastNameRep}}\",\n    \"address\": {\n      \"addressLine1\": \"{{addressLine1Rep}}\",\n      \"addressLine2\": \"{{addressLine2Rep}}\",\n      \"city\": \"{{cityRep}}\",\n      \"province\": \"{{provinceRep}}\",\n      \"country\": \"{{country}}\",\n      \"postCode\": \"{{postCodeRep}}\"\n    },\n    \"idNumber\": \"{{idNumberRep}}\",\n    \"idType\": \"{{idType}}\",\n    \"idCountryCode\": \"{{idCountryCode}}\",\n    \"nationality\": \"{{nationality}}\",\n    \"dateOfBirth\": \"{{dateOfBirthRep}}\",\n    \"contactNumber\": \"{{contactNumberRep}}\",\n    \"altContactWork\": \"{{altContactWorkRep}}\",\n    \"altContactHome\": \"{{altContactHomeRep}}\",\n    \"email\": \"{{emailRep}}\"\n  },\n  \"pin\": {\n    \"pinBlock\": \"{{pin1}}\",\n    \"encryptionParameters\": {\n      \"pinBlockFormat\": \"ISO_9564_FORMAT_0\",\n      \"accountNumber\": \"012345678901\",\n      \"keyIndex\": 0\n    }\n  },  \n  \"customerProfileId\": \"{{customerId}}\",\n  \"newCustomer\": true,\n  \"fee\": {\n    \"amount\": 20,\n    \"currency\": \"{{currency}}\",\n    \"ledgerIndicator\": \"DEBIT\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							]
+						},
+						"description": "Requests that an order be created for the specified payment amount. The request is treated as an online financial authorization message. If the client calling this resource does not receive a response, then a `reversePayment` call must be made to the `/orders/reversals` resource to ensure the transaction is cancelled with no financial impact."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder post order creation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "61c88bbe-aac2-47db-9cf9-d7ff8f53a4c4",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify redemption status\"] = jsonData.status === \"UNREDEEMED\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "reversePayment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "891c26dd-2be6-4441-b8e4-49e10248b9fd",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "7d2bad96-5b8e-4d55-ba9b-e7f05822530e",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 202\"] = responseCode.code === 202;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Request timestamp verify\"] = jsonData.time === postman.getEnvironmentVariable(\"timestamp\");",
+									"",
+									"var thirdPartyIds = jsonData.thirdPartyIdentifiers;",
+									"tests[\"Third party identifiers returned\"] = thirdPartyIds.length > 0;",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId1\", thirdPartyIds[0].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef1\", thirdPartyIds[0].transactionIdentifier);",
+									"",
+									"postman.setEnvironmentVariable(\"thirdPartyId2\", thirdPartyIds[1].institutionId);",
+									"postman.setEnvironmentVariable(\"thirdPartyTranRef2\", thirdPartyIds[1].transactionIdentifier);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ],\n  \"reversalReason\": \"TIMEOUT\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/reversals",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"reversals"
+							]
+						},
+						"description": "Requests that a money transfer payment be reversed. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider."
+					},
+					"response": []
+				},
+				{
+					"name": "lookupOrder post reversal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bcbaebc3-f2ea-40a0-add2-506a47d557aa",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify redemption status\"] = jsonData.status === \"CANCELLED\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders?orderRedeemRef={{orderRedeemRef}}&merchantId={{merchantId}}&originatorInstId={{originatorInstId}}&receiverId={{receiverInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderRedeemRef",
+									"value": "{{orderRedeemRef}}"
+								},
+								{
+									"key": "merchantId",
+									"value": "{{merchantId}}"
+								},
+								{
+									"key": "originatorInstId",
+									"value": "{{originatorInstId}}"
+								},
+								{
+									"key": "receiverId",
+									"value": "{{receiverInstId}}"
+								}
+							]
+						},
+						"description": "Queries the details of an existing money transfer order."
+					},
+					"response": []
+				},
+				{
+					"name": "confirmPayment Error",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ec4751ab-b567-441f-a22a-b305a2ffca94",
+								"type": "text/javascript",
+								"exec": [
+									"function guid() {",
+									"    function _p8(s) {",
+									"        var p = (Math.random().toString(16)+\"000000000\").substr(2,8);",
+									"        return s ? \"-\" + p.substr(0,4) + \"-\" + p.substr(4,4) : p ;",
+									"    }",
+									"    return _p8() + _p8(true) + _p8(true) + _p8();",
+									"}",
+									"",
+									"postman.setEnvironmentVariable(\"uuid\",guid());",
+									"",
+									"var timestamp = new Date().toISOString();",
+									"postman.setEnvironmentVariable(\"timestamp\", timestamp);"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "08c39c64-1ed4-4dc5-b040-9441af0b5601",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Verify error type\"] = jsonData.errorType === \"DUPLICATE_RECORD\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{uuid}}\",\n  \"requestId\": \"{{requestId}}\",\n  \"time\": \"{{timestamp}}\",\n  \"thirdPartyIdentifiers\": [\n    {\n      \"institutionId\": \"{{thirdPartyId1}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef1}}\"\n    },\n    {\n      \"institutionId\": \"{{thirdPartyId2}}\",\n      \"transactionIdentifier\": \"{{thirdPartyTranRef2}}\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/orders/confirmations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"orders",
+								"confirmations"
+							]
+						},
+						"description": "Advises that a money transfer payment has been made successfully. This is treated as a store-and-forward transaction. Upon receipt, the Electrum service will respond immediately to acknowledge receipt and place the message on a queue for guaranteed delivery to the service provider. If the service provider does not support positive advice messages, then this is simply stored for reporting purposes."
+					},
+					"response": []
+				},
+				{
+					"name": "resetTestServer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9f74e13f-39b9-43d7-9427-e85c804be053",
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{host}}/moneytransfer/{{version}}/testServerAdmin/reset?clientId={{clientInstId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"moneytransfer",
+								"{{version}}",
+								"testServerAdmin",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "{{clientInstId}}"
+								}
+							]
+						},
+						"description": "This resets the test server for a specific user"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "{{clientInstId}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "passwordA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "5dc596cc-0fe6-4b76-be6c-c061fd986c9c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2b0719e1-d124-4729-a96d-0cc467fbf13a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

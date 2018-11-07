@@ -1,0 +1,28 @@
+{
+  "amount": {
+    "amount": 12340,
+    "currency": "710"
+  },
+  "status": "REDEEMED",
+  "originator": {
+    "institution": {
+      "id": "632942",
+      "name": "Massmart"
+    },
+    "terminalId": "string",
+    "merchant": {
+      "merchantType": "string",
+      "merchantId": "string",
+      "merchantName": {
+        "name": "string",
+        "city": "string",
+        "region": "string",
+        "country": "string"
+      }
+    }
+  },
+  "receiver": {
+    "id": "632946",
+    "name": "Capitec"
+  }
+}
