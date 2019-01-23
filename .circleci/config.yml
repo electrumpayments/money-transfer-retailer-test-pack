@@ -37,7 +37,7 @@ jobs:
     docker:
       - image: circleci/openjdk:8u162-jdk-stretch
     environment:
-      HEROKU_APP: money-transfer-retailer-test-pack
+      HEROKU_APP: money-transfer-test-pack
       DOCKER_REPONAME: electrum/money-transfer-test-server
     steps:
       - checkout
