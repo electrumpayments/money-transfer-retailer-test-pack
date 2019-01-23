@@ -81,7 +81,7 @@ public class MoneyTransferTestServerRunner {
          ServletContextHandler context = new ServletContextHandler();
          context.setContextPath("/");
          context.addServlet(servletHolder, "/*");
-         context.setHandler(sh);
+         context.insertHandler(sh);
 
          server.setHandler(context);
 
