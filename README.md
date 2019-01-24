@@ -6,9 +6,9 @@ To test a client implementation an instance of this test server is provided at: 
 
 Or you can run a containerized version of this test server locally using Docker:
 ```bash
-docker pull electrum/airtime-test-server:2
+docker pull electrum/money-transfer-test-server:2
 # Run the test server listening on localhost:8080
-docker run -d -p 8080:8080 electrum/airtime-test-server:2
+docker run -d -p 8080:8080 electrum/money-transfer-test-server:2
 ```
 
 Messages sent to this server via the URLs described in the [money-transfer-retailer-interface](https://github.com/electrumpayments/money-transfer-retailer-interface) will be
