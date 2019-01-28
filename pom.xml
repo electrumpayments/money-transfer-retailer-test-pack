@@ -32,7 +32,7 @@
 
   <properties>
     <money-transfer-retailer-version>2.5.0</money-transfer-retailer-version>
-    <service-interface-base-version>3.16.0</service-interface-base-version>
+    <service-interface-base-version>3.16.1</service-interface-base-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <joda-time-version>2.9.9</joda-time-version>
     <swagger-version>1.5.16</swagger-version>
